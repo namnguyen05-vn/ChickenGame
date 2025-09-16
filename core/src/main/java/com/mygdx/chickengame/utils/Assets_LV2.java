@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 public class Assets_LV2 {
     public static Texture enemyTex;
     public static Texture backgroundTex;
+    public static Texture EnemyBullet;
 
     public static Sound ChickenHit;
 
@@ -15,6 +16,7 @@ public class Assets_LV2 {
     public static void load() {
         enemyTex = new Texture("Image/Chicken1.png");
         backgroundTex = new Texture("Image/background2.png");
+        EnemyBullet = new Texture("Image/EnemyBullet.png");
 
         ChickenHit = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/ChickenDie.ogg"));
 
@@ -27,6 +29,7 @@ public class Assets_LV2 {
         enemyTex.dispose();
         backgroundTex.dispose();
         ChickenHit.dispose();
+        EnemyBullet.dispose();
         BGL2.dispose();
     }
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.chickengame.ChickenGame;
-import com.mygdx.chickengame.utils.Assets_LV1;
+import com.mygdx.chickengame.utils.Assets;
 
 public class MenuScreen implements Screen {
     private ChickenGame game;
@@ -14,7 +14,7 @@ public class MenuScreen implements Screen {
     public MenuScreen(ChickenGame game) {
         this.game = game;
         this.batch = new SpriteBatch();
-        Assets_LV1.load();
+        Assets.load();
     }
 
     @Override

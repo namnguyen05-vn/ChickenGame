@@ -3,7 +3,7 @@ package com.mygdx.chickengame.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygdx.chickengame.utils.Assets_LV1;
+import com.mygdx.chickengame.utils.Assets;
 
 public class Enemy {
     public Rectangle rect;
@@ -25,6 +25,6 @@ public class Enemy {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(Assets_LV1.enemyTex, rect.x, rect.y, rect.width, rect.height);
+        batch.draw(Assets.enemyTex, rect.x, rect.y, rect.width, rect.height);
     }
 }
