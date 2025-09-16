@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.chickengame.utils.Assets;
 
-public class Enemy {
+public class Boss {
     public Rectangle rect;
     private float speedX, speedY;
 
@@ -15,13 +15,13 @@ public class Enemy {
 
     public Array<Enemy_Bullet> bullets;
 
-    public Enemy() {
+    public Boss() {
         rect = new Rectangle(MathUtils.random(50, 750), MathUtils.random(300, 550), 64, 64);
         speedX = MathUtils.random(-100, 100);
         speedY = MathUtils.random(-100, 100);
 
         // random thời gian bắn, mỗi Enemy sẽ có interval riêng
-        shootInterval = MathUtils.random(1.0f, 4.0f);
+        shootInterval = MathUtils.random(0.5f, 0.9f);
 
         bullets = new Array<>();
     }
