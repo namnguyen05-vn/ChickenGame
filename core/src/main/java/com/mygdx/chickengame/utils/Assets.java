@@ -9,12 +9,11 @@ public class Assets {
     public static Texture backgroundTex;
 
     public static void load() {
-        playerTex = new Texture("player.png");
-        enemyTex = new Texture("enemy.png");
-        bulletTex = new Texture("bullet.png");
-        backgroundTex = new Texture("background.png");
+        playerTex = new Texture("Image/player2.png");
+        enemyTex = new Texture("Image/Chick.png");
+        bulletTex = new Texture("Image/bullet.png");
+        backgroundTex = new Texture("Image/background2.png");
     }
-
     public static void dispose() {
         playerTex.dispose();
         enemyTex.dispose();
