@@ -10,6 +10,7 @@ import com.mygdx.chickengame.entities.Bullet;
 import com.mygdx.chickengame.entities.Enemy;
 import com.mygdx.chickengame.entities.Player;
 import com.mygdx.chickengame.utils.Assets_LV1;
+import com.mygdx.chickengame.utils.Assets_Common;
 
 public class Level1Screen implements Screen {
     private ChickenGame game;
