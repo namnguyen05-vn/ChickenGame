@@ -15,10 +15,10 @@ public class Player {
     }
 
     public void update(float delta, Array<Bullet> bullets) {
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) rect.x -= 300 * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rect.x += 300 * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) rect.y += 300 * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) rect.y -= 300 * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) rect.x -= 150 * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rect.x += 150 * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) rect.y += 150 * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) rect.y -= 150 * delta;
 
         // Giới hạn trong màn hình
         if (rect.x < 0) rect.x = 0;
