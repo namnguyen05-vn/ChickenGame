@@ -9,7 +9,7 @@ import com.mygdx.chickengame.ChickenGame;
 import com.mygdx.chickengame.entities.Bullet;
 import com.mygdx.chickengame.entities.Enemy;
 import com.mygdx.chickengame.entities.Player;
-import com.mygdx.chickengame.utils.Assets;
+import com.mygdx.chickengame.utils.Assets_LV1;
 
 public class Level1Screen implements Screen {
     private ChickenGame game;
@@ -42,7 +42,7 @@ public class Level1Screen implements Screen {
 
         // vẽ
         batch.begin();
-        batch.draw(Assets.backgroundTex, 0, 0, 800, 600);
+        batch.draw(Assets_LV1.backgroundTex, 0, 0, 800, 600);
         player.render(batch);
         for (Enemy e : enemies) e.render(batch);
         for (Bullet b : bullets) b.render(batch);
