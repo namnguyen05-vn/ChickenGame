@@ -48,7 +48,6 @@ public class Level1Screen implements Screen {
         for (Bullet b : bullets) b.render(batch);
         batch.end();
     }
-
     @Override public void show() {}
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}

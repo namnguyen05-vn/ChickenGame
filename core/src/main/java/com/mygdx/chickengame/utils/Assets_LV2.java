@@ -12,7 +12,7 @@ public class Assets_LV2 {
 
     public static Sound ChickenHit;
 
-    public static Music BGL2;
+    public static Music BGMusic;
     public static void load() {
         enemyTex = new Texture("Image/Chicken1.png");
         backgroundTex = new Texture("Image/background2.png");
@@ -20,9 +20,9 @@ public class Assets_LV2 {
 
         ChickenHit = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/ChickenDie.ogg"));
 
-        BGL2 = Gdx.audio.newMusic(Gdx.files.internal("Music/Level2Music.ogg"));
-        BGL2.setLooping(true);
-        BGL2.setVolume(0.5f);
+        BGMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/Level2Music.ogg"));
+        BGMusic.setLooping(true);
+        BGMusic.setVolume(0.5f);
 
     }
     public static void dispose() {
@@ -30,7 +30,7 @@ public class Assets_LV2 {
         backgroundTex.dispose();
         ChickenHit.dispose();
         EnemyBullet.dispose();
-        BGL2.dispose();
+        BGMusic.dispose();
     }
 }
 

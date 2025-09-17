@@ -12,22 +12,23 @@ public class Assets_LV1 {
     public static Sound ChickenHit;
 
 
-    public static Music BGL1;
+    public static Music BGMusic;
     public static void load() {
         enemyTex = new Texture("Image/Chick.png");
         backgroundTex = new Texture("Image/background1.png");
 
         ChickenHit = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/ChickenDie.ogg"));
 
-        BGL1 = Gdx.audio.newMusic(Gdx.files.internal("Music/Level1Music.ogg"));
-        BGL1.setLooping(true);
-        BGL1.setVolume(0.5f);
+        BGMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/Level1Music.ogg"));
+        BGMusic.setLooping(true);
+        BGMusic.setVolume(0.5f);
 
     }
     public static void dispose() {
         enemyTex.dispose();
         backgroundTex.dispose();
         ChickenHit.dispose();
+        BGMusic.dispose();
     }
 }
 

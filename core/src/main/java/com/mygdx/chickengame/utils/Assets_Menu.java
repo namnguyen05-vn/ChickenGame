@@ -10,30 +10,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Assets_Menu {
     public static Texture Title_Game;
-    public static Texture Background;
+    public static Texture backgroundTex;
     public static Texture Start;
     public static Texture Escape;
 
-    public static Music Background_Music;
+    public static Music BGMusic;
     public static void load(){
-        Title_Game = new Texture("Image/MenuTitle.png");
-        Background = new Texture("Image/background_menu.png");
+        Title_Game = new Texture("Image/MenuTitle2.png");
+        backgroundTex = new Texture("Image/background_menu.png");
         Start = new Texture("Image/StartButton.png");
         Escape = new Texture("Image/EscapeButton.png");
 
-        Background_Music = Gdx.audio.newMusic(Gdx.files.internal("Music/BackgroundMusic.ogg"));
-        Background_Music.setLooping(true);
-        Background_Music.setVolume(0.5f);
-
-        Background_Music = Gdx.audio.newMusic(Gdx.files.internal("Music/BackgroundMusic.ogg"));
-        Background_Music.setLooping(true);
-        Background_Music.setVolume(0.5f);
+        BGMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/BackgroundMusic.ogg"));
+        BGMusic.setLooping(true);
+        BGMusic.setVolume(0.5f);
     }
 
     public static void dispose() {
         Title_Game.dispose();
-        Background.dispose();
-        Background_Music.dispose();
+        backgroundTex.dispose();
+        BGMusic.dispose();
         Start.dispose();
         Escape.dispose();
     }

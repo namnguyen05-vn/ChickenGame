@@ -12,7 +12,7 @@ public class Assets_Common {
     public static Sound PlayerExplosion;
 
     public static void load() {
-        playerTex = new Texture("Image/player2.png");
+        playerTex = new Texture("Image/player3.png");
         bulletTex = new Texture("Image/bullet.png");
 
         BulletSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/laser1.ogg"));

@@ -16,7 +16,7 @@ public class Assets_LV3 {
     public static Sound ChickenHit;
     public static Sound BossHit;
 
-    public static Music BGL3;
+    public static Music BGMusic;
     public static void load() {
         enemyTex_Boss_100HP = new Texture("Image/Boss_100%HP.png");
         enemyTex_Boss_50HP = new Texture("Image/Boss_50%HP.png");
@@ -25,12 +25,13 @@ public class Assets_LV3 {
         backgroundTex = new Texture("Image/background3.png");
         ChickenBullet = new Texture("Image/EnemyBullet.png");
         BossBullet = new Texture("Image/BossBullet.png");
+
         ChickenHit = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/ChickenDie.ogg"));
         BossHit = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/HitEnemy.ogg"));
 
-        BGL3 = Gdx.audio.newMusic(Gdx.files.internal("Music/Level3Music.ogg"));
-        BGL3.setLooping(true);
-        BGL3.setVolume(0.5f);
+        BGMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/Level3Music.ogg"));
+        BGMusic.setLooping(true);
+        BGMusic.setVolume(0.5f);
 
     }
     public static void dispose() {
@@ -43,7 +44,7 @@ public class Assets_LV3 {
         BossBullet.dispose();
         ChickenHit.dispose();
         BossHit.dispose();
-        BGL3.dispose();
+        BGMusic.dispose();
     }
 }
 
