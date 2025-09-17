@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.chickengame.ChickenGame;
 import com.mygdx.chickengame.entities.Bullet;
 import com.mygdx.chickengame.entities.Enemy;
+import com.mygdx.chickengame.entities.Enemy_Bullet;
 import com.mygdx.chickengame.entities.Player;
 import com.mygdx.chickengame.utils.Assets;
 
@@ -17,6 +18,7 @@ public class Level1Screen implements Screen {
     private Player player;
     private Array<Enemy> enemies;
     private Array<Bullet> bullets;
+    private Array<Enemy_Bullet> enemy_bullets;
 
     public Level1Screen(ChickenGame game) {
         this.game = game;
@@ -24,6 +26,7 @@ public class Level1Screen implements Screen {
         this.player = new Player();
         this.enemies = new Array<>();
         this.bullets = new Array<>();
+        this.enemy_bullets = new Array<>();
 
         // tạo 5 con gà
         for (int i = 0; i < 5; i++) {
@@ -39,6 +42,7 @@ public class Level1Screen implements Screen {
         player.update(delta, bullets);
         for (Enemy e : enemies) e.update(delta);
         for (Bullet b : bullets) b.update(delta);
+        for (Enemy_Bullet e_b : enemy_bullets ) e_b.update(delta);
 
         // vẽ
         batch.begin();
@@ -46,8 +50,10 @@ public class Level1Screen implements Screen {
         player.render(batch);
         for (Enemy e : enemies) e.render(batch);
         for (Bullet b : bullets) b.render(batch);
+        for (Enemy_Bullet e_b : enemy_bullets ) e_b.render(batch);
         batch.end();
     }
+
     @Override public void show() {}
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}
