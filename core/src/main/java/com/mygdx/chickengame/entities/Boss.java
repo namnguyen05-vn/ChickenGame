@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.chickengame.utils.Assets;
+import com.mygdx.chickengame.utils.Assets_LV3;
 
 public class Boss {
     public Rectangle rect;
@@ -53,7 +53,7 @@ public class Boss {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(Assets.enemyTex, rect.x, rect.y, rect.width, rect.height);
+        batch.draw(Assets_LV3.enemyTex_Boss_100HP, rect.x, rect.y, rect.width, rect.height);
         for (Enemy_Bullet bullet : bullets) {
             bullet.render(batch);
         }
