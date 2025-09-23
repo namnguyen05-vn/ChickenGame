@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.chickengame.utils.Assets_Common;
+import com.mygdx.chickengame.utils.Assets;
 
 public class Player {
     public Rectangle rect;
@@ -33,6 +33,6 @@ public class Player {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(Assets_Common.playerTex, rect.x, rect.y, rect.width, rect.height);
+        batch.draw(Assets.playerTex, rect.x, rect.y, rect.width, rect.height);
     }
 }
