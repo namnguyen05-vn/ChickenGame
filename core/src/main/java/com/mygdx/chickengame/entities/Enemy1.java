@@ -5,12 +5,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.chickengame.utils.Assets_LV1;
 
-public class Enemy {
+public class Enemy1 {
     public Rectangle rect;
     private float speedX, speedY;
+    private float Hp=2;
 
-    public Enemy() {
-        rect = new Rectangle(MathUtils.random(50, 750), MathUtils.random(300, 550), 64, 64);
+    public Enemy1() {
+        rect = new Rectangle(MathUtils.random(50, 750), MathUtils.random(300, 550), 48, 48);
         speedX = MathUtils.random(-100, 100);
         speedY = MathUtils.random(-100, 100);
     }

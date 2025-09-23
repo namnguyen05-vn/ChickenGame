@@ -35,4 +35,13 @@ public class Player {
     public void render(SpriteBatch batch) {
         batch.draw(Assets_Common.playerTex, rect.x, rect.y, rect.width, rect.height);
     }
+    public float getX() {
+    return rect.x+rect.width/2;   
+    }
+
+    public float getY() {
+    return rect.y+rect.height/2;
+    }
+    
 }
+
