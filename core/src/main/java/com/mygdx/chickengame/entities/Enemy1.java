@@ -21,7 +21,7 @@ public class Enemy1 {
         rect.y += speedY * delta;
 
         // Bật lại khi chạm viền
-        if (rect.x < 0 || rect.x > 800 - rect.width) speedX = -speedX;
+        if (rect.x < 50 || rect.x > 700 - rect.width) speedX = -speedX;
         if (rect.y < 200 || rect.y > 600 - rect.height) speedY = -speedY;
     }
 
