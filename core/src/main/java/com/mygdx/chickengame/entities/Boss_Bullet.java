@@ -24,7 +24,7 @@ public class Boss_Bullet {
         // Cập nhật vị trí
         position.add(velocity.x * delta, velocity.y * delta);
 
-        // Cập nhật lại 
+        // Cập nhật lại
         rect.setPosition(position.x, position.y);
     }
 
