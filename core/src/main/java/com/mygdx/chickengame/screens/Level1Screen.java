@@ -1,3 +1,4 @@
+
 package com.mygdx.chickengame.screens;
 
 import com.badlogic.gdx.Gdx;
@@ -7,16 +8,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.chickengame.ChickenGame;
 import com.mygdx.chickengame.entities.Bullet;
-import com.mygdx.chickengame.entities.Enemy;
+import com.mygdx.chickengame.entities.Enemy1;
 import com.mygdx.chickengame.entities.Player;
-import com.mygdx.chickengame.utils.Assets;
+import com.mygdx.chickengame.utils.Assets_LV1;
 
 public class Level1Screen implements Screen {
     private ChickenGame game;
     private SpriteBatch batch;
     private Player player;
-    private Array<Enemy> enemies;
+    private Array<Enemy1> enemies;
     private Array<Bullet> bullets;
+
 
     public Level1Screen(ChickenGame game) {
         this.game = game;
@@ -25,28 +27,32 @@ public class Level1Screen implements Screen {
         this.enemies = new Array<>();
         this.bullets = new Array<>();
 
-        // tạo 5 con gà
-        for (int i = 0; i < 5; i++) {
-            enemies.add(new Enemy());
+        Assets_LV1.load();   // load tài nguyên riêng cho màn 1
+        Assets_LV1.BGMusic.play();
+
+        // tạo 10 con gà
+        for (int i = 0; i < 10; i++) {
+            enemies.add(new Enemy1());
         }
     }
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // update
         player.update(delta, bullets);
-        for (Enemy e : enemies) e.update(delta);
+        for (Enemy1 e : enemies) e.update(delta);
         for (Bullet b : bullets) b.update(delta);
 
         // vẽ
         batch.begin();
-        batch.draw(Assets.backgroundTex, 0, 0, 800, 600);
+        batch.draw(Assets_LV1.backgroundTex, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         player.render(batch);
-        for (Enemy e : enemies) e.render(batch);
+        for (Enemy1 e : enemies) e.render(batch);
         for (Bullet b : bullets) b.render(batch);
-        batch.end();
+batch.end();
     }
 
     @Override public void show() {}
@@ -54,5 +60,8 @@ public class Level1Screen implements Screen {
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
-    @Override public void dispose() { batch.dispose(); }
+    @Override public void dispose() {
+        batch.dispose();
+        Assets_LV1.dispose();   // giải phóng asset màn 1
+    }
 }
