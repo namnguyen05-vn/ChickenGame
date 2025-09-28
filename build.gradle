@@ -27,7 +27,7 @@ allprojects {
 
 configure(subprojects) {
   apply plugin: 'java-library'
-  sourceCompatibility = 11
+  sourceCompatibility = 8
 
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
   // The article can be helpful when using assets.txt in your project.
@@ -56,7 +56,7 @@ configure(subprojects) {
 
 subprojects {
   version = "$projectVersion"
-  ext.appName = 'ChickenGame'
+  ext.appName = 'chicken-invaders-clone'
   repositories {
     mavenCentral()
 //    maven { url 'https://s01.oss.sonatype.org' }
@@ -69,4 +69,4 @@ subprojects {
   }
 }
 
-eclipse.project.name = 'ChickenGame' + '-parent'
+eclipse.project.name = 'chicken-invaders-clone' + '-parent'
