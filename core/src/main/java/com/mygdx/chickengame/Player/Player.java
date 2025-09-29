@@ -1,66 +1,88 @@
-package com.mygdx.chickengame.entities;
+package com.mygdx.chickengame.Player;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.chickengame.utils.Assets_Common;
-import com.mygdx.chickengame.utils.Constants;
-
+import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 
 public class Player {
-    public float x, y;
-    public float speed = 300; // tốc độ di chuyển
-    public float width, height;
-
-    private ArrayList<Bullet> bullets = new ArrayList<>();
-    private float fireCooldown = 0.25f; // 0.25s / viên
-    private float timeSinceLastShot = 0;
+    private Texture texture;
+    private Rectangle bounds;
+    private float speed = 300f; // tốc độ di chuyển
+    private ArrayList<Bullet> bullets;
+    private float shootCooldown = 0.3f; // delay giữa các viên đạn
+    private float shootTimer = 0;
 
     public Player() {
-        width = Assets_Common.playerTex.getWidth();
-        height = Assets_Common.playerTex.getHeight();
-        resetPosition();
-    }
-
-    public void resetPosition() {
-        x = (Constants.SCREEN_WIDTH - width) / 2f;
-        y = 50; // đáy màn hình
+        texture = new Texture("player.png");
+        bounds = new Rectangle(
+                (Gdx.graphics.getWidth() - 64) / 2f,
+                50,
+                64,
+                64
+        );
+        bullets = new ArrayList<>();
     }
 
     public void update(float delta) {
-        // Di chuyển
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) x -= speed * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) x += speed * delta;
+        handleInput(delta);
 
-        // Giữ player trong màn hình
-        if (x < 0) x = 0;
-        if (x + width > Constants.SCREEN_WIDTH) x = Constants.SCREEN_WIDTH - width;
+        // cập nhật cooldown bắn
+        if (shootTimer > 0) shootTimer -= delta;
 
-        // Bắn đạn
-        timeSinceLastShot += delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && timeSinceLastShot >= fireCooldown) {
-            bullets.add(new Bullet(x + width / 2 - 5, y + height));
-            Assets_Common.BulletSound.play();
-            timeSinceLastShot = 0;
+        // update bullets
+        for (Bullet b : bullets) {
+            b.update(delta);
+        }
+        bullets.removeIf(b -> b.isOffScreen());
+    }
+
+    private void handleInput(float delta) {
+        if (Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.LEFT)) {
+            bounds.x -= speed * delta;
+        }
+        if (Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.RIGHT)) {
+            bounds.x += speed * delta;
+        }
+        if (Gdx.input.isKeyPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
+            shoot();
         }
 
-        // Update đạn
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet b = bullets.get(i);
-            b.update(delta);
-            if (!b.alive) bullets.remove(i--);
+        // giữ player trong màn hình
+        if (bounds.x < 0) bounds.x = 0;
+        if (bounds.x > Gdx.graphics.getWidth() - bounds.width) {
+            bounds.x = Gdx.graphics.getWidth() - bounds.width;
+        }
+    }
+
+    private void shoot() {
+        if (shootTimer <= 0) {
+            bullets.add(new Bullet(bounds.x + bounds.width / 2 - 4, bounds.y + bounds.height));
+            shootTimer = shootCooldown;
         }
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(Assets_Common.playerTex, x, y);
+        batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
         for (Bullet b : bullets) {
             b.render(batch);
         }
     }
 
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
     public ArrayList<Bullet> getBullets() {
         return bullets;
+    }
+
+    public void resetPosition() {
+        bounds.x = (Gdx.graphics.getWidth() - bounds.width) / 2f;
+    }
+
+    public void dispose() {
+        texture.dispose();
     }
 }
