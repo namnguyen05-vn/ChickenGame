@@ -33,4 +33,3 @@ public class Assets_LV2 {
         BGMusic.dispose();
     }
 }
-
