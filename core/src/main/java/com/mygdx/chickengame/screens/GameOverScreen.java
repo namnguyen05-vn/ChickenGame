@@ -15,7 +15,7 @@ import com.mygdx.chickengame.utils.UIHelper;
 import com.mygdx.chickengame.utils.ParticleEffect;
 import com.mygdx.chickengame.utils.PlayerState;
 
-public class MenuScreen implements Screen {
+public class GameOverScreen implements Screen {
     private ChickenGame game;
     private SpriteBatch batch;
 
@@ -39,7 +39,7 @@ public class MenuScreen implements Screen {
     private static final float PULSE_SPEED = 2.0f;
     private static final float HOVER_SCALE = 1.1f;
 
-    public MenuScreen(ChickenGame game) {
+    public GameOverScreen(ChickenGame game) {
         this.game = game;
         this.batch = new SpriteBatch();
         this.touchPos = new Vector3();
@@ -201,6 +201,8 @@ public class MenuScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             playButtonSound();
             Assets_Menu.BGMusic.stop();
+            // Reset player state khi chơi lại
+            PlayerState.reset();
             game.setScreen(new Level1Screen(game));
         }
 
@@ -214,7 +216,7 @@ public class MenuScreen implements Screen {
             if (startButtonBounds.contains(touchPos.x, touchPos.y)) {
                 playButtonSound();
                 Assets_Menu.BGMusic.stop();
-                // Reset player state khi bắt đầu game mới
+                // Reset player state khi chơi lại
                 PlayerState.reset();
                 game.setScreen(new Level1Screen(game));
             }
