@@ -25,4 +25,8 @@ public class Enemy_Bullet {
     public boolean isOutOfScreen() {
         return rect.y + rect.height < 0;
     }
+
+    public boolean isOffScreen() {
+        return rect.y + rect.height < 0;
+    }
 }

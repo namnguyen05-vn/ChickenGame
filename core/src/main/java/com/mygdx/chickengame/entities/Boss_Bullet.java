@@ -11,7 +11,7 @@ public class Boss_Bullet {
     public Rectangle rect;
     private float speed = 350; // tốc độ đạn px/s
 
-    //  nhận vị trí Boss và Player
+    // nhận vị trí Boss và Player
     public Boss_Bullet(float startX, float startY, float targetX, float targetY) {
         position = new Vector2(startX, startY);
         // Tính hướng từ Boss -> Player rồi nhân với speed
@@ -34,5 +34,14 @@ public class Boss_Bullet {
 
     public Rectangle getRect() {
         return rect;
+    }
+
+    public boolean isOffScreen() {
+        // Sử dụng kích thước màn hình dynamic
+        int screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
+        int screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
+
+        return rect.x < -rect.width || rect.x > screenWidth ||
+                rect.y < -rect.height || rect.y > screenHeight;
     }
 }
