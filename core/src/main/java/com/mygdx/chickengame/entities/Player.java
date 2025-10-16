@@ -3,104 +3,105 @@ package com.mygdx.chickengame.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.chickengame.utils.Assets_Common;
-import com.mygdx.chickengame.utils.PlayerState;
 
+/**
+ * Player có 3 cấp độ.
+ * - Cấp 1: bắn 1–3 viên (tăng dần theo cấp đạn)
+ * - Cấp 2: bắn chữ V 4 viên, tốc độ nhanh hơn
+ * - Cấp 3: bắn chữ V 7 viên, nhanh hơn nữa
+ */
 public class Player {
-    public Rectangle rect;
+    private Rectangle rect;
     private float shootTimer = 0;
-    private static final float SHOOT_COOLDOWN = 0.3f; // 0.3 giây cooldown
-
-    // Movement constants
-    private static final float MOVE_SPEED = 250f;
-    private static final int BORDER_MARGIN = 10; // Margin từ viền màn hình
+    private float shootCooldown = 0.3f;
+    private float moveSpeed = 300f;
+    private int level = 1; // mặc định cấp 1
 
     public Player() {
-        // Sử dụng kích thước màn hình hiện tại
-        int screenWidth = Gdx.graphics.getWidth();
-        rect = new Rectangle(screenWidth / 2 - 32, 80, 64, 64); // máy bay ở giữa, cao hơn một chút
+        rect = new Rectangle(Gdx.graphics.getWidth() / 2f - 32, 80, 64, 64);
     }
 
     public void update(float delta, Array<Bullet> bullets) {
-        // Di chuyển
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            rect.x -= MOVE_SPEED * delta;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            rect.x += MOVE_SPEED * delta;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            rect.y += MOVE_SPEED * delta;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            rect.y -= MOVE_SPEED * delta;
-        }
-
-        // Giới hạn vị trí trong màn hình - sử dụng dynamic
-        int screenWidth = Gdx.graphics.getWidth();
-        int screenHeight = Gdx.graphics.getHeight();
-
-        if (rect.x < BORDER_MARGIN) {
-            rect.x = BORDER_MARGIN;
-        }
-        if (rect.x > screenWidth - rect.width - BORDER_MARGIN) {
-            rect.x = screenWidth - rect.width - BORDER_MARGIN;
-        }
-        if (rect.y < BORDER_MARGIN) {
-            rect.y = BORDER_MARGIN;
-        }
-        if (rect.y > screenHeight - rect.height - BORDER_MARGIN) {
-            rect.y = screenHeight - rect.height - BORDER_MARGIN;
-        }
-
-        // Cập nhật timer bắn
+        handleInput(delta);
         shootTimer -= delta;
 
-        // Bắn đạn
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shootTimer <= 0) {
             shoot(bullets);
-            shootTimer = SHOOT_COOLDOWN;
-            Assets_Common.BulletSound.play(0.3f);
         }
+    }
+
+    private void handleInput(float delta) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
+            rect.x -= moveSpeed * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
+            rect.x += moveSpeed * delta;
+
+        // Giới hạn màn hình
+        rect.x = Math.max(0, Math.min(rect.x, Gdx.graphics.getWidth() - rect.width));
     }
 
     private void shoot(Array<Bullet> bullets) {
-        if (PlayerState.isUpgraded()) {
-            // Bắn 3 viên đạn
-            bullets.add(new Bullet(rect.x + rect.width / 2 - 8, rect.y + rect.height, true)); // giữa
-            bullets.add(new Bullet(rect.x + 10, rect.y + rect.height, true)); // trái
-            bullets.add(new Bullet(rect.x + rect.width - 26, rect.y + rect.height, true)); // phải
-        } else {
-            // Bắn 1 viên đạn thông thường
-            bullets.add(new Bullet(rect.x + rect.width / 2 - 8, rect.y + rect.height, false));
+        Assets_Common.BulletSound.play(0.3f);
+
+        float centerX = rect.x + rect.width / 2f;
+        float startY = rect.y + rect.height;
+
+        switch (level) {
+            case 1:
+                // cấp 1: bắn 1 viên
+                bullets.add(new Bullet(centerX - 8, startY, 1, 0));
+                shootCooldown = 0.3f;
+                break;
+
+            case 2:
+                // cấp 2: bắn 3 viên (chữ V nhẹ)
+                bullets.add(new Bullet(centerX - 8, startY, 2, 0));
+                bullets.add(new Bullet(centerX - 20, startY, 2, -10));
+                bullets.add(new Bullet(centerX + 10, startY, 2, 10));
+                shootCooldown = 0.25f;
+                break;
+
+            case 3:
+                // cấp 3: bắn chữ V mạnh 4 viên
+                bullets.add(new Bullet(centerX - 8, startY, 4, 0));
+                bullets.add(new Bullet(centerX - 25, startY, 4, -15));
+                bullets.add(new Bullet(centerX + 10, startY, 4, 15));
+                bullets.add(new Bullet(centerX - 40, startY, 4, -25));
+                shootCooldown = 0.2f;
+                break;
+
+            default:
+                // cấp 3 nâng cao: 7 viên chữ V rộng
+                bullets.add(new Bullet(centerX - 8, startY, 5, 0));
+                for (int i = 1; i <= 3; i++) {
+                    bullets.add(new Bullet(centerX - i * 15, startY, 5, -i * 10));
+                    bullets.add(new Bullet(centerX + i * 15, startY, 5, i * 10));
+                }
+                shootCooldown = 0.15f;
         }
-    }
 
-    public void upgrade() {
-        PlayerState.setUpgraded(true);
-        Assets_Common.PowerUpSound.play(0.5f);
-    }
-
-    public boolean isUpgraded() {
-        return PlayerState.isUpgraded();
+        shootTimer = shootCooldown;
     }
 
     public void render(SpriteBatch batch) {
-        if (PlayerState.isUpgraded()) {
-            batch.draw(Assets_Common.playerUpgradedTex, rect.x, rect.y, rect.width, rect.height);
-        } else {
-            batch.draw(Assets_Common.playerTex, rect.x, rect.y, rect.width, rect.height);
+        Texture tex = getTextureByLevel();
+        batch.draw(tex, rect.x, rect.y, rect.width, rect.height);
+    }
+
+    private Texture getTextureByLevel() {
+        switch (level) {
+            case 2: return Assets_Common.playerLV2;
+            case 3: return Assets_Common.playerLV3;
+            default: return Assets_Common.playerLV1;
         }
     }
 
-    public float getX() {
-        return rect.x + rect.width / 2;
-    }
-
-    public float getY() {
-        return rect.y + rect.height / 2;
-    }
-
+    // ====== GET / SET ======
+    public Rectangle getRect() { return rect; }
+    public void setLevel(int newLevel) { this.level = Math.min(3, newLevel); }
+    public int getLevel() { return level; }
 }
