@@ -14,12 +14,14 @@ import com.mygdx.chickengame.utils.Assets_Common;
  * - Cấp 2: bắn chữ V 4 viên, tốc độ nhanh hơn
  * - Cấp 3: bắn chữ V 7 viên, nhanh hơn nữa
  */
+
 public class Player {
-    private Rectangle rect;
+    public Rectangle rect;
     private float shootTimer = 0;
     private float shootCooldown = 0.3f;
     private float moveSpeed = 300f;
-    private int level = 1; // mặc định cấp 1
+    private int playerLevel = 1; // 1-3
+    private int bulletLevel = 1; // 1-3 (cấp đạn, tối đa 3 ở playerLevel 1)
 
     public Player() {
         rect = new Rectangle(Gdx.graphics.getWidth() / 2f - 32, 80, 64, 64);
@@ -28,7 +30,6 @@ public class Player {
     public void update(float delta, Array<Bullet> bullets) {
         handleInput(delta);
         shootTimer -= delta;
-
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shootTimer <= 0) {
             shoot(bullets);
         }
@@ -39,69 +40,77 @@ public class Player {
             rect.x -= moveSpeed * delta;
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
             rect.x += moveSpeed * delta;
-
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
+            rect.y += moveSpeed * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
+            rect.y -= moveSpeed * delta;
         // Giới hạn màn hình
         rect.x = Math.max(0, Math.min(rect.x, Gdx.graphics.getWidth() - rect.width));
+        rect.y = Math.max(0, Math.min(rect.y, Gdx.graphics.getHeight() - rect.height));
     }
 
     private void shoot(Array<Bullet> bullets) {
         Assets_Common.BulletSound.play(0.3f);
-
         float centerX = rect.x + rect.width / 2f;
         float startY = rect.y + rect.height;
-
-        switch (level) {
-            case 1:
-                // cấp 1: bắn 1 viên
+        if (playerLevel == 1) {
+            // Cấp 1: bắn 1-3 viên thẳng
+            if (bulletLevel == 1) {
                 bullets.add(new Bullet(centerX - 8, startY, 1, 0));
                 shootCooldown = 0.3f;
-                break;
-
-            case 2:
-                // cấp 2: bắn 3 viên (chữ V nhẹ)
-                bullets.add(new Bullet(centerX - 8, startY, 2, 0));
-                bullets.add(new Bullet(centerX - 20, startY, 2, -10));
-                bullets.add(new Bullet(centerX + 10, startY, 2, 10));
+            } else if (bulletLevel == 2) {
+                bullets.add(new Bullet(centerX - 16, startY, 1, 0));
+                bullets.add(new Bullet(centerX + 0, startY, 1, 0));
                 shootCooldown = 0.25f;
-                break;
-
-            case 3:
-                // cấp 3: bắn chữ V mạnh 4 viên
-                bullets.add(new Bullet(centerX - 8, startY, 4, 0));
-                bullets.add(new Bullet(centerX - 25, startY, 4, -15));
-                bullets.add(new Bullet(centerX + 10, startY, 4, 15));
-                bullets.add(new Bullet(centerX - 40, startY, 4, -25));
+            } else {
+                bullets.add(new Bullet(centerX - 20, startY, 1, 0));
+                bullets.add(new Bullet(centerX - 4, startY, 1, 0));
+                bullets.add(new Bullet(centerX + 12, startY, 1, 0));
                 shootCooldown = 0.2f;
-                break;
-
-            default:
-                // cấp 3 nâng cao: 7 viên chữ V rộng
-                bullets.add(new Bullet(centerX - 8, startY, 5, 0));
-                for (int i = 1; i <= 3; i++) {
-                    bullets.add(new Bullet(centerX - i * 15, startY, 5, -i * 10));
-                    bullets.add(new Bullet(centerX + i * 15, startY, 5, i * 10));
-                }
-                shootCooldown = 0.15f;
+            }
+        } else if (playerLevel == 2) {
+            // Cấp 2: bắn 5 viên chữ V
+            bullets.add(new Bullet(centerX - 8, startY, 1, 0));
+            bullets.add(new Bullet(centerX - 30, startY, 1, -20));
+            bullets.add(new Bullet(centerX + 14, startY, 1, 20));
+            bullets.add(new Bullet(centerX - 50, startY, 1, -35));
+            bullets.add(new Bullet(centerX + 34, startY, 1, 35));
+            shootCooldown = 0.15f;
+        } else {
+            // Cấp 3: bắn 10 viên chữ V rộng, tốc độ tăng
+            for (int i = -5; i <= 4; i++) {
+                float angle = i * 10;
+                bullets.add(new Bullet(centerX - 8, startY, 1, angle));
+            }
+            shootCooldown = 0.09f;
         }
-
         shootTimer = shootCooldown;
     }
 
-    public void render(SpriteBatch batch) {
-        Texture tex = getTextureByLevel();
-        batch.draw(tex, rect.x, rect.y, rect.width, rect.height);
-    }
-
-    private Texture getTextureByLevel() {
-        switch (level) {
-            case 2: return Assets_Common.playerLV2;
-            case 3: return Assets_Common.playerLV3;
-            default: return Assets_Common.playerLV1;
+    // Nâng cấp đạn hoặc player
+    public void upgrade() {
+        if (playerLevel == 1 && bulletLevel < 3) {
+            bulletLevel++;
+        } else if (playerLevel < 3) {
+            playerLevel++;
+            bulletLevel = 1;
         }
     }
 
-    // ====== GET / SET ======
+    // Getter cho X, Y
+    public float getX() { return rect.x; }
+    public float getY() { return rect.y; }
+    public int getPlayerLevel() { return playerLevel; }
+    public int getBulletLevel() { return bulletLevel; }
     public Rectangle getRect() { return rect; }
-    public void setLevel(int newLevel) { this.level = Math.min(3, newLevel); }
-    public int getLevel() { return level; }
+    public void setPlayerLevel(int lv) { playerLevel = Math.max(1, Math.min(3, lv)); }
+    public void setBulletLevel(int lv) { bulletLevel = Math.max(1, Math.min(3, lv)); }
+
+    public void render(SpriteBatch batch) {
+        Texture tex;
+        if (playerLevel == 2) tex = Assets_Common.playerLV2;
+        else if (playerLevel == 3) tex = Assets_Common.playerLV3;
+        else tex = Assets_Common.playerLV1;
+        batch.draw(tex, rect.x, rect.y, rect.width, rect.height);
+    }
 }

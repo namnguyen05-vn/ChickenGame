@@ -72,9 +72,9 @@ public class Assets_Common {
         powerUpTex = new Texture("Image/UpdateBullet.png");
 
         // --- Load âm thanh ---
-        BulletSound = Gdx.audio.newSound(Gdx.files.internal("Music/SoundEffect/laser1.ogg"));
-        PlayerExplosion = Gdx.audio.newSound(Gdx.files.internal("Music/SoundEffect/PlayerDie.ogg"));
-        PowerUpSound = Gdx.audio.newSound(Gdx.files.internal("Music/SoundEffect/PowerUp.ogg"));
+    BulletSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/laser1.ogg"));
+    PlayerExplosion = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/PlayerDie.ogg"));
+    PowerUpSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/PowerUp.ogg"));
     }
 
     // =============================
