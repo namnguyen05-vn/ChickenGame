@@ -96,7 +96,7 @@ public class MenuScreen implements Screen {
         // Update particles
         particles.update(delta);
 
-        Gdx.gl.glClearColor(0.05f, 0.05f, 0.1f, 1); // Darker blue background
+    Gdx.gl.glClearColor(0.05f, 0.05f, 0.1f, 1); // Nền xanh đậm hơn
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         handleInput();
@@ -228,7 +228,7 @@ public class MenuScreen implements Screen {
     }
 
     private void playButtonSound() {
-        // Play a click sound effect (if available)
+        // Phát âm thanh click (nếu có)
         if (Assets_Common.BulletSound != null) {
             Assets_Common.BulletSound.play(0.3f);
         }

@@ -26,8 +26,8 @@ public class LevelBoss implements Screen {
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
     private Player player;
-    private Array<Enemy1> enemies1; // Gà con cho phase 1
-    private Array<Enemy3> enemies3; // Gà lớn cho phase 2
+    private Array<Enemy1> enemies1; // Gà con cho pha 1
+    private Array<Enemy3> enemies3; // Gà lớn cho pha 2
     private Array<Bullet> bullets;
     private Array<Boss_Bullet> bossBullets;
     private Array<Enemy_Bullet> enemyBullets;
@@ -36,18 +36,24 @@ public class LevelBoss implements Screen {
     private Boss_100 boss_100;
     private Boss_50 boss_50;
 
-    // Boss stats
+    // Thông số boss
     private float maxBossHp = 100f;
     private float currentBossHp = 100f;
-    private boolean isPhase1 = true; // Phase 1: 100-50% HP, Phase 2: 50-0% HP
+    private boolean isPhase1 = true; // Pha 1: 100-50% HP, Pha 2: 50-0% HP
     private float spawnTimer = 0f;
     private boolean bossDefeated = false;
 
     public LevelBoss(ChickenGame game) {
+        this(game, new Player());
+    }
+
+    // Constructor mới nhận player hiện có (giữ mạng) nhưng reset vị trí/cấp
+    public LevelBoss(ChickenGame game, Player player) {
         this.game = game;
         this.batch = new SpriteBatch();
         this.shapeRenderer = new ShapeRenderer();
-        this.player = new Player();
+        this.player = player;
+        this.player.resetForNewLevel();
         this.enemies1 = new Array<>();
         this.enemies3 = new Array<>();
         this.bullets = new Array<>();
@@ -55,12 +61,12 @@ public class LevelBoss implements Screen {
         this.enemyBullets = new Array<>();
         this.powerUps = new Array<>();
 
-        Assets_Common.load();
-        Assets_LV3.load();
-        Assets_LV3.BGMusic.play();
+    Assets_Common.load();
+    Assets_LV3.load();
+    Assets_LV3.BGMusic.play();
 
-        // Start with phase 1 boss
-        this.boss_100 = new Boss_100(player);
+    // Bắt đầu với boss pha 1
+    this.boss_100 = new Boss_100(this.player);
     }
 
     @Override
@@ -76,7 +82,7 @@ public class LevelBoss implements Screen {
         batch.draw(Assets_LV3.backgroundTex, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         player.render(batch);
 
-        // Vẽ boss tùy theo phase
+        // Vẽ boss tùy theo pha
         if (isPhase1 && boss_100 != null) {
             boss_100.render(batch);
         } else if (!isPhase1 && boss_50 != null) {
@@ -101,12 +107,12 @@ public class LevelBoss implements Screen {
 
         batch.end();
 
-        // Vẽ thanh máu boss
+    // Vẽ thanh HP của boss
         drawBossHealthBar();
     }
 
     private void update(float delta) {
-        // Update player
+    // Cập nhật player
         player.update(delta, bullets);
 
         // Update boss
@@ -118,7 +124,7 @@ public class LevelBoss implements Screen {
             currentBossHp = boss_50.getHp();
         }
 
-        // Update enemies and remove off-screen ones
+        // Cập nhật các enemy và loại bỏ nếu ra khỏi màn
         for (int i = enemies1.size - 1; i >= 0; i--) {
             Enemy1 e = enemies1.get(i);
             e.update(delta);
@@ -143,7 +149,7 @@ public class LevelBoss implements Screen {
             }
         }
 
-        // Update bullets
+    // Cập nhật các đạn
         updateBullets(delta);
 
         // Update power-ups
@@ -155,7 +161,7 @@ public class LevelBoss implements Screen {
             }
         }
 
-        // Check phase transition (50% HP)
+        // Kiểm tra chuyển pha (50% HP)
         if (isPhase1 && currentBossHp <= maxBossHp / 2) {
             transitionToPhase2();
         }
@@ -163,7 +169,7 @@ public class LevelBoss implements Screen {
         // Check collisions
         checkCollisions();
 
-        // Check victory condition
+        // Kiểm tra điều kiện chiến thắng
         if (currentBossHp <= 0 && !bossDefeated) {
             bossDefeated = true;
             Assets_LV3.BGMusic.stop();

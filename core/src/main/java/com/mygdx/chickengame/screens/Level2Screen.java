@@ -23,26 +23,26 @@ public class Level2Screen implements Screen {
     private Array<Enemy_Bullet> enemyBullets;
     private Array<PowerUp> powerUps;
 
-    // Wave management
+    // Quản lý wave (đợt kẻ địch)
     private int wave = 1;
     private int enemiesKilled = 0;
     private float spawnTimer = 0;
 
-    // Constants
+    // Hằng số
     private static final int WAVE1_ENEMIES = 10;
     private static final int WAVE2_ENEMIES = 10;
     private static final int WAVE3_ENEMIES = 15;
-    private static final float SPAWN_INTERVAL = 1.2f; // Spawn enemy mỗi 1.2 giây
+    private static final float SPAWN_INTERVAL = 1.2f; // Sinh kẻ địch mỗi 1.2 giây
 
     // Spawn counters
     private int wave1Spawned = 0;
     private int wave2Spawned = 0;
     private int wave3Spawned = 0;
 
-    public Level2Screen(ChickenGame game) {
+    public Level2Screen(ChickenGame game, Player player) {
         this.game = game;
         this.batch = new SpriteBatch();
-        this.player = new Player();
+        this.player = player; // dùng lại player từ màn trước
         this.enemies = new Array<>();
         this.bullets = new Array<>();
         this.enemyBullets = new Array<>();
@@ -103,10 +103,10 @@ public class Level2Screen implements Screen {
     }
 
     private void update(float delta) {
-        // Update spawn timer
+    // Cập nhật bộ đếm sinh (spawn timer)
         spawnTimer -= delta;
 
-        // Spawn enemies based on wave
+        // Sinh kẻ địch theo wave hiện tại
         if (wave == 1) {
             spawnWave1();
         } else if (wave == 2) {
@@ -115,10 +115,10 @@ public class Level2Screen implements Screen {
             spawnWave3();
         }
 
-        // Update player
+    // Cập nhật player
         player.update(delta, bullets);
 
-        // Update enemies and their shooting, remove off-screen ones
+        // Cập nhật enemy và hành vi bắn của chúng, loại bỏ con ra khỏi màn hình
         for (int i = enemies.size - 1; i >= 0; i--) {
             Enemy2 e = enemies.get(i);
             e.update(delta, enemyBullets);
@@ -129,7 +129,7 @@ public class Level2Screen implements Screen {
             }
         }
 
-        // Update bullets
+        // Cập nhật đạn của player
         for (int i = bullets.size - 1; i >= 0; i--) {
             Bullet bullet = bullets.get(i);
             bullet.update(delta);
@@ -139,7 +139,7 @@ public class Level2Screen implements Screen {
             }
         }
 
-        // Update enemy bullets
+        // Cập nhật đạn của kẻ địch
         for (int i = enemyBullets.size - 1; i >= 0; i--) {
             Enemy_Bullet enemyBullet = enemyBullets.get(i);
             enemyBullet.update(delta);
@@ -149,7 +149,7 @@ public class Level2Screen implements Screen {
             }
         }
 
-        // Update power-ups
+        // Cập nhật power-up
         for (int i = powerUps.size - 1; i >= 0; i--) {
             PowerUp powerUp = powerUps.get(i);
             powerUp.update(delta);
@@ -159,10 +159,10 @@ public class Level2Screen implements Screen {
             }
         }
 
-        // Check collisions
+    // Kiểm tra va chạm
         checkCollisions();
 
-        // Check wave progression
+        // Kiểm tra tiến trình wave
         if (wave == 1 && wave1Spawned >= WAVE1_ENEMIES && enemies.size == 0) {
             wave = 2;
             spawnTimer = SPAWN_INTERVAL; // Reset spawn timer cho wave 2
@@ -170,9 +170,10 @@ public class Level2Screen implements Screen {
             wave = 3;
             spawnTimer = SPAWN_INTERVAL; // Reset spawn timer cho wave 3
         } else if (wave == 3 && wave3Spawned >= WAVE3_ENEMIES && enemies.size == 0) {
-            // Chuyển sang Level Boss
+            // Chuyển sang Level Boss, truyền player giữ nguyên mạng nhưng reset vị trí/cấp
             Assets_LV2.BGMusic.stop();
-            game.setScreen(new LevelBoss(game));
+            player.resetForNewLevel();
+            game.setScreen(new LevelBoss(game, player));
         }
     }
 

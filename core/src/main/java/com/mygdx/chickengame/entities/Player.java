@@ -20,8 +20,22 @@ public class Player {
     private float shootTimer = 0;
     private float shootCooldown = 0.3f;
     private float moveSpeed = 300f;
-    private int playerLevel = 1; // 1-3
-    private int bulletLevel = 1; // 1-3 (cấp đạn, tối đa 3 ở playerLevel 1)
+    private int playerLevel = 1; // giữ cho sử dụng sau này
+    private int bulletLevel = 1; // 1..5 (số viên bắn mỗi lần)
+    private int lives = 5; // Số mạng mặc định
+    // Trừ mạng khi bị trúng đạn
+    public void loseLife() {
+        if (lives > 0) lives--;
+    }
+
+    // Kiểm tra còn sống
+    public boolean isAlive() {
+        return lives > 0;
+    }
+
+    // Getter/setter cho lives
+    public int getLives() { return lives; }
+    public void setLives(int l) { lives = Math.max(0, l); }
 
     public Player() {
         rect = new Rectangle(Gdx.graphics.getWidth() / 2f - 32, 80, 64, 64);
@@ -53,47 +67,27 @@ public class Player {
         Assets_Common.BulletSound.play(0.3f);
         float centerX = rect.x + rect.width / 2f;
         float startY = rect.y + rect.height;
-        if (playerLevel == 1) {
-            // Cấp 1: bắn 1-3 viên thẳng
-            if (bulletLevel == 1) {
-                bullets.add(new Bullet(centerX - 8, startY, 1, 0));
-                shootCooldown = 0.3f;
-            } else if (bulletLevel == 2) {
-                bullets.add(new Bullet(centerX - 16, startY, 1, 0));
-                bullets.add(new Bullet(centerX + 0, startY, 1, 0));
-                shootCooldown = 0.25f;
-            } else {
-                bullets.add(new Bullet(centerX - 20, startY, 1, 0));
-                bullets.add(new Bullet(centerX - 4, startY, 1, 0));
-                bullets.add(new Bullet(centerX + 12, startY, 1, 0));
-                shootCooldown = 0.2f;
-            }
-        } else if (playerLevel == 2) {
-            // Cấp 2: bắn 5 viên chữ V
-            bullets.add(new Bullet(centerX - 8, startY, 1, 0));
-            bullets.add(new Bullet(centerX - 30, startY, 1, -20));
-            bullets.add(new Bullet(centerX + 14, startY, 1, 20));
-            bullets.add(new Bullet(centerX - 50, startY, 1, -35));
-            bullets.add(new Bullet(centerX + 34, startY, 1, 35));
-            shootCooldown = 0.15f;
-        } else {
-            // Cấp 3: bắn 10 viên chữ V rộng, tốc độ tăng
-            for (int i = -5; i <= 4; i++) {
-                float angle = i * 10;
-                bullets.add(new Bullet(centerX - 8, startY, 1, angle));
-            }
-            shootCooldown = 0.09f;
+        // Bắn số viên bằng bulletLevel theo dải ngang căn giữa (1..5)
+        int count = Math.max(1, Math.min(5, bulletLevel));
+        float spacing = 18f; // pixels between bullets
+        float startOffset = -spacing * (count - 1) / 2f;
+        for (int i = 0; i < count; i++) {
+            float offsetX = startOffset + i * spacing;
+            bullets.add(new Bullet(centerX + offsetX, startY, 1, 0));
         }
+        // Điều chỉnh thời gian chờ (cooldown) theo số viên
+        if (count <= 1) shootCooldown = 0.3f;
+        else if (count == 2) shootCooldown = 0.25f;
+        else if (count == 3) shootCooldown = 0.2f;
+        else if (count == 4) shootCooldown = 0.15f;
+        else shootCooldown = 0.12f;
         shootTimer = shootCooldown;
     }
 
-    // Nâng cấp đạn hoặc player
     public void upgrade() {
-        if (playerLevel == 1 && bulletLevel < 3) {
+        // Tăng cấp đạn (tối đa 5)
+        if (bulletLevel < 5) {
             bulletLevel++;
-        } else if (playerLevel < 3) {
-            playerLevel++;
-            bulletLevel = 1;
         }
     }
 
@@ -106,11 +100,19 @@ public class Player {
     public void setPlayerLevel(int lv) { playerLevel = Math.max(1, Math.min(3, lv)); }
     public void setBulletLevel(int lv) { bulletLevel = Math.max(1, Math.min(3, lv)); }
 
+    public void resetForNewLevel() {
+        // Đặt lại vị trí về mặc định
+        rect.x = Gdx.graphics.getWidth() / 2f - rect.width / 2f;
+        rect.y = 80;
+        // Đặt lại cấp bắn
+        this.playerLevel = 1;
+        this.bulletLevel = 1;
+        this.shootTimer = 0f;
+    }
+
     public void render(SpriteBatch batch) {
-        Texture tex;
-        if (playerLevel == 2) tex = Assets_Common.playerLV2;
-        else if (playerLevel == 3) tex = Assets_Common.playerLV3;
-        else tex = Assets_Common.playerLV1;
+        // Sử dụng ảnh playerLV3 cho mọi cấp đạn theo yêu cầu
+        Texture tex = Assets_Common.playerLV3;
         batch.draw(tex, rect.x, rect.y, rect.width, rect.height);
     }
 }

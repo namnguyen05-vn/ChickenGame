@@ -38,10 +38,11 @@ public class Bullet {
         Texture tex = Assets_Common.bulletLV1;
         this.sprite = new Sprite(tex);
         this.sprite.setSize(16, 32);
-        this.sprite.setPosition(x, y);
+        // X, Y truyền vào sẽ là tâm của đạn để dễ căn giữa so với player
+        this.sprite.setPosition(x - this.sprite.getWidth() / 2f, y - this.sprite.getHeight() / 2f);
         this.sprite.setOriginCenter();
         this.sprite.setRotation(angleOffset); // xoay hình đạn
-        this.rect = new Rectangle(x, y, sprite.getWidth(), sprite.getHeight());
+        this.rect = new Rectangle(this.sprite.getX(), this.sprite.getY(), sprite.getWidth(), sprite.getHeight());
         // Đặt vận tốc bay (chữ V nghĩa là lệch trái hoặc phải 1 góc)
         float radians = (float) Math.toRadians(angleOffset);
         this.velocity = new Vector2((float) Math.sin(radians) * 250, 400f); // Y hướng lên
