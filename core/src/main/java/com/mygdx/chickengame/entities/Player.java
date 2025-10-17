@@ -102,12 +102,9 @@ public class Player {
 
     public void resetForNewLevel() {
         // Đặt lại vị trí về mặc định
+        // Chỉ đặt lại vị trí player khi vào màn mới. Giữ nguyên cấp đạn và các trạng thái khác.
         rect.x = Gdx.graphics.getWidth() / 2f - rect.width / 2f;
         rect.y = 80;
-        // Đặt lại cấp bắn
-        this.playerLevel = 1;
-        this.bulletLevel = 1;
-        this.shootTimer = 0f;
     }
 
     public void render(SpriteBatch batch) {
