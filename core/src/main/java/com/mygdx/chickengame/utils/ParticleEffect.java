@@ -48,13 +48,13 @@ public class ParticleEffect {
     public void update(float delta) {
         spawnTimer += delta;
 
-        // Spawn new particles
+        // Sinh particle mới
         if (spawnTimer >= SPAWN_RATE) {
             spawnParticle();
             spawnTimer = 0f;
         }
 
-        // Update existing particles
+        // Cập nhật các particle hiện có
         for (int i = particles.size - 1; i >= 0; i--) {
             Particle particle = particles.get(i);
             particle.update(delta);

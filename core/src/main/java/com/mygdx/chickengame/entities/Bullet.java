@@ -1,42 +1,65 @@
 package com.mygdx.chickengame.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.chickengame.utils.Assets_Common;
 
+/**
+ * Lớp đạn: xử lý chuyển động, vẽ, và góc nghiêng theo hướng bay (chữ V).
+ */
 public class Bullet {
+    private Sprite sprite;
     public Rectangle rect;
-    private float damage = 1;
-    private boolean isUpgraded;
-
-    public Bullet(float x, float y) {
-        this(x, y, false);
+    // Getter cho rect
+    public Rectangle getRect() {
+        return rect;
     }
 
-    public Bullet(float x, float y, boolean upgraded) {
-        rect = new Rectangle(x, y, 16, 32);
-        this.isUpgraded = upgraded;
-        this.damage = upgraded ? 2 : 1; // đạn nâng cấp gây 2 damage
+    // Trả về sát thương của đạn theo cấp độ
+    public int getDamage() {
+        switch (level) {
+            case 2: return 2;
+            case 3: return 3;
+            case 4: return 4;
+            case 5: return 5;
+            default: return 1;
+        }
+    }
+    private Vector2 velocity;
+    private int level;
+    private float speed;
+
+    public Bullet(float x, float y, int level, float angleOffset) {
+        this.level = level;
+        // Luôn dùng 1 ảnh đạn duy nhất
+        Texture tex = Assets_Common.bulletLV1;
+        this.sprite = new Sprite(tex);
+        this.sprite.setSize(16, 32);
+        // X, Y truyền vào sẽ là tâm của đạn để dễ căn giữa so với player
+        this.sprite.setPosition(x - this.sprite.getWidth() / 2f, y - this.sprite.getHeight() / 2f);
+        this.sprite.setOriginCenter();
+        this.sprite.setRotation(angleOffset); // xoay hình đạn
+        this.rect = new Rectangle(this.sprite.getX(), this.sprite.getY(), sprite.getWidth(), sprite.getHeight());
+        // Đặt vận tốc bay (chữ V nghĩa là lệch trái hoặc phải 1 góc)
+        float radians = (float) Math.toRadians(angleOffset);
+        this.velocity = new Vector2((float) Math.sin(radians) * 250, 400f); // Y hướng lên
+        this.speed = 400f;
     }
 
     public void update(float delta) {
-        rect.y += 400 * delta;
+        sprite.setX(sprite.getX() + velocity.x * delta);
+        sprite.setY(sprite.getY() + velocity.y * delta);
+        rect.setPosition(sprite.getX(), sprite.getY());
     }
 
     public void render(SpriteBatch batch) {
-        if (isUpgraded) {
-            batch.draw(Assets_Common.upgradedbulletTex, rect.x, rect.y, rect.width, rect.height);
-        } else {
-            batch.draw(Assets_Common.bulletTex, rect.x, rect.y, rect.width, rect.height);
-        }
-    }
-
-    public float getDamage() {
-        return damage;
+        sprite.draw(batch);
     }
 
     public boolean isOffScreen() {
-        // Sử dụng kích thước màn hình dynamic
-        return rect.y > com.badlogic.gdx.Gdx.graphics.getHeight();
+        return sprite.getY() > com.badlogic.gdx.Gdx.graphics.getHeight();
     }
 }
