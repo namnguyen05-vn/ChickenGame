@@ -23,13 +23,13 @@ public class Level1Screen implements Screen {
     private Array<Bullet> bullets;
     private Array<PowerUp> powerUps;
 
-    // Wave management
+    // Quản lý wave (đợt kẻ địch)
     private int wave = 1;
     private int enemiesKilled = 0;
     private float spawnTimer = 0;
     private boolean levelComplete = false;
 
-    // Constants
+    // Hằng số
     private static final int WAVE1_ENEMIES = 5;
     private static final int WAVE2_ENEMIES = 10;
 
@@ -50,7 +50,7 @@ public class Level1Screen implements Screen {
 
     private int wave1Spawned = 0;
     private int wave2Spawned = 0;
-    private static final float SPAWN_INTERVAL = 1.5f; // Spawn enemy mỗi 1.5 giây
+    private static final float SPAWN_INTERVAL = 1.5f; // Sinh kẻ địch mỗi 1.5 giây
 
     private void spawnWave1() {
         // Spawn enemies theo thời gian thay vì một lúc
@@ -88,6 +88,8 @@ public class Level1Screen implements Screen {
             b.render(batch);
         for (PowerUp p : powerUps)
             p.render(batch);
+
+
         batch.end();
     }
 
@@ -95,17 +97,17 @@ public class Level1Screen implements Screen {
         // Update spawn timer
         spawnTimer -= delta;
 
-        // Spawn enemies based on wave
+        // Sinh kẻ địch dựa trên wave hiện tại
         if (wave == 1) {
             spawnWave1();
         } else if (wave == 2) {
             spawnWave2();
         }
 
-        // Update player
+    // Cập nhật player
         player.update(delta, bullets);
 
-        // Update enemies and remove off-screen ones
+        // Cập nhật các enemy và loại bỏ những con đi ra ngoài màn hình
         for (int i = enemies.size - 1; i >= 0; i--) {
             Enemy1 e = enemies.get(i);
             e.update(delta);
@@ -116,7 +118,7 @@ public class Level1Screen implements Screen {
             }
         }
 
-        // Update bullets
+        // Cập nhật đạn
         for (int i = bullets.size - 1; i >= 0; i--) {
             Bullet bullet = bullets.get(i);
             bullet.update(delta);
@@ -127,7 +129,7 @@ public class Level1Screen implements Screen {
             }
         }
 
-        // Update power-ups
+        // Cập nhật power-up
         for (int i = powerUps.size - 1; i >= 0; i--) {
             PowerUp powerUp = powerUps.get(i);
             powerUp.update(delta);
@@ -138,17 +140,18 @@ public class Level1Screen implements Screen {
             }
         }
 
-        // Check collisions
+    // Kiểm tra va chạm
         checkCollisions();
 
-        // Check wave progression
+        // Kiểm tra tiến trình wave
         if (wave == 1 && wave1Spawned >= WAVE1_ENEMIES && enemies.size == 0) {
             wave = 2;
             spawnTimer = SPAWN_INTERVAL; // Reset spawn timer cho wave 2
         } else if (wave == 2 && wave2Spawned >= WAVE2_ENEMIES && enemies.size == 0) {
-            // Chuyển sang Level 2
+            // Chuyển sang Level 2, truyền player giữ nguyên mạng nhưng reset vị trí/cấp
             Assets_LV1.BGMusic.stop();
-            game.setScreen(new Level2Screen(game));
+            player.resetForNewLevel();
+            game.setScreen(new Level2Screen(game, player));
         }
     }
 
@@ -176,14 +179,18 @@ public class Level1Screen implements Screen {
             }
         }
 
-        // Player vs Enemy collisions (player dies)
-        for (Enemy1 enemy : enemies) {
+        // Player vs Enemy collisions (trừ mạng)
+        for (int i = enemies.size - 1; i >= 0; i--) {
+            Enemy1 enemy = enemies.get(i);
             if (player.rect.overlaps(enemy.rect)) {
-                // Player chết
                 Assets_Common.PlayerExplosion.play(0.5f);
-                Assets_LV1.BGMusic.stop();
-                game.setScreen(new GameOverScreen(game));
-                return;
+                player.loseLife();
+                enemies.removeIndex(i);
+                if (!player.isAlive()) {
+                    Assets_LV1.BGMusic.stop();
+                    game.setScreen(new GameOverScreen(game));
+                    return;
+                }
             }
         }
 
