@@ -19,18 +19,17 @@ apply plugin: 'io.github.fourlastor.construo'
 import io.github.fourlastor.construo.Target
 
 sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
-mainClassName = 'com.mygdx.chickengame.lwjgl3.Lwjgl3Launcher'
+mainClassName = 'com.chicken.game.lwjgl3.Lwjgl3Launcher'
 application.setMainClass(mainClassName)
 eclipse.project.name = appName + '-lwjgl3'
-java.sourceCompatibility = 11
-java.targetCompatibility = 11
+java.sourceCompatibility = 8
+java.targetCompatibility = 8
 if (JavaVersion.current().isJava9Compatible()) {
-        compileJava.options.release.set(11)
+        compileJava.options.release.set(8)
 }
 
 dependencies {
   implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-  implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
   implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
   implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   implementation project(':core')
@@ -135,7 +134,7 @@ construo {
         architecture.set(Target.Architecture.AARCH64)
         jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.15_6.tar.gz")
         // macOS needs an identifier
-        identifier.set("com.mygdx.chickengame." + appName)
+        identifier.set("com.chicken.game." + appName)
         // Optional: icon for macOS, as an ICNS file
         macIcon.set(project.file("icons/logo.icns"))
       }
@@ -143,7 +142,7 @@ construo {
         architecture.set(Target.Architecture.X86_64)
         jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_x64_mac_hotspot_17.0.15_6.tar.gz")
         // macOS needs an identifier
-        identifier.set("com.mygdx.chickengame." + appName)
+        identifier.set("com.chicken.game." + appName)
         // Optional: icon for macOS, as an ICNS file
         macIcon.set(project.file("icons/logo.icns"))
       }
@@ -182,4 +181,11 @@ startScripts.classpath = project.tasks.jar.outputs.files
 
 if(enableGraalNative == 'true') {
   apply from: file("nativeimage.gradle")
+}
+// 1) Cho Gradle biết assets nằm ở core/assets
+sourceSets.main.resources.srcDirs += [ project(":core").file("assets") ]
+
+// 2) Khi chạy (task run), đặt working dir là core/assets
+tasks.named("run", JavaExec) {
+    workingDir = project(":core").file("assets")
 }
