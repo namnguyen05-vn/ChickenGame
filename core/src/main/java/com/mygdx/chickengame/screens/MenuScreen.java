@@ -1,33 +1,28 @@
-package com.chicken.game;
+package com.mygdx.chickengame.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.Input;
+import com.mygdx.chickengame.ChickenGame;
+import com.mygdx.chickengame.utils.Assets_Common;
 
 public class MenuScreen extends BaseScreen {
-    private final GlyphLayout layout = new GlyphLayout();
-
-    public MenuScreen(ChickenGame game) { super(game); }
+    public MenuScreen(ChickenGame game) {
+        super(game);
+    }
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
-            game.session.resetForNewGame();
-            game.setScreen(new Level1Screen(game));
-            return;
-        }
-
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        clearScreen(0f, 0f, 0f);
 
         game.batch.begin();
-        if (Assets.bgMenu != null) game.batch.draw(Assets.bgMenu, 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
-        Assets.font.getData().setScale(2f);
-        layout.setText(Assets.font, "CHICKEN INVADERS CLONE");
-        Assets.font.draw(game.batch, layout, (VIRTUAL_WIDTH - layout.width)/2f, VIRTUAL_HEIGHT - 80);
-        Assets.font.getData().setScale(1.2f);
-        Assets.font.draw(game.batch, "Press ENTER to Play", 280, 200);
+        Assets_Common.font.draw(game.batch, "MENU", 100, 300);
+        Assets_Common.font.draw(game.batch, "ENTER = Start Level 1", 100, 260);
+        Assets_Common.font.draw(game.batch, "ESC   = Quit (not implemented)", 100, 230);
         game.batch.end();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            game.session.level = 1;
+            game.goLevel1();
+        }
     }
 }

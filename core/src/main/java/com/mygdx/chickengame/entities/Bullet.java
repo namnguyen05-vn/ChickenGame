@@ -1,65 +1,71 @@
 package com.mygdx.chickengame.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.mygdx.chickengame.utils.Assets_Common;
 
 /**
- * Lớp đạn: xử lý chuyển động, vẽ, và góc nghiêng theo hướng bay (chữ V).
+ * Đạn của Player.
+ * Hỗ trợ 2 kiểu tạo:
+ *  - new Bullet(x, y)
+ *  - new Bullet(x, y, dirX, dirY)  // code Player của bạn đang dùng (1,0)
  */
 public class Bullet {
-    private Sprite sprite;
     public Rectangle rect;
-    // Getter cho rect
-    public Rectangle getRect() {
-        return rect;
+
+    private float vx;
+    private float vy;
+
+    // Constructor mặc định: bắn thẳng lên
+    public Bullet(float x, float y) {
+        rect = new Rectangle(x - 3, y, 6, 12);
+        this.vx = 0f;
+        this.vy = 400f;
     }
 
-    // Trả về sát thương của đạn theo cấp độ
-    public int getDamage() {
-        switch (level) {
-            case 2: return 2;
-            case 3: return 3;
-            case 4: return 4;
-            case 5: return 5;
-            default: return 1;
+    // Constructor theo hướng: (x,y,dirX,dirY)
+    // Hiện tại Player gọi new Bullet(..., 1, 0)
+    // nên mình map (1,0) => bắn thẳng lên
+    public Bullet(float x, float y, int dirX, int dirY) {
+        rect = new Rectangle(x - 3, y, 6, 12);
+
+        float baseSpeed = 400f;
+        this.vx = dirX * baseSpeed;
+        this.vy = dirY * baseSpeed;
+
+        // nếu team bạn truyền (1,0) nhưng thực tế muốn bắn lên
+        if (dirX == 1 && dirY == 0) {
+            this.vx = 0f;
+            this.vy = 400f;
         }
     }
-    private Vector2 velocity;
-    private int level;
-    private float speed;
 
-    public Bullet(float x, float y, int level, float angleOffset) {
-        this.level = level;
-        // Luôn dùng 1 ảnh đạn duy nhất
-        Texture tex = Assets_Common.bulletLV1;
-        this.sprite = new Sprite(tex);
-        this.sprite.setSize(16, 32);
-        // X, Y truyền vào sẽ là tâm của đạn để dễ căn giữa so với player
-        this.sprite.setPosition(x - this.sprite.getWidth() / 2f, y - this.sprite.getHeight() / 2f);
-        this.sprite.setOriginCenter();
-        this.sprite.setRotation(angleOffset); // xoay hình đạn
-        this.rect = new Rectangle(this.sprite.getX(), this.sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        // Đặt vận tốc bay (chữ V nghĩa là lệch trái hoặc phải 1 góc)
-        float radians = (float) Math.toRadians(angleOffset);
-        this.velocity = new Vector2((float) Math.sin(radians) * 250, 400f); // Y hướng lên
-        this.speed = 400f;
-    }
-
-    public void update(float delta) {
-        sprite.setX(sprite.getX() + velocity.x * delta);
-        sprite.setY(sprite.getY() + velocity.y * delta);
-        rect.setPosition(sprite.getX(), sprite.getY());
+    public void update(float dt) {
+        rect.x += vx * dt;
+        rect.y += vy * dt;
     }
 
     public void render(SpriteBatch batch) {
-        sprite.draw(batch);
+        // dùng bulletTex từ Assets_Common
+        batch.draw(Assets_Common.bulletTex, rect.x, rect.y, rect.width, rect.height);
+        // nếu team muốn nâng cấp đạn đổi sprite, sau này có thể chọn upgradedbulletTex
     }
 
+    // Dùng trong Level1Screen / Level2Screen:
+    // bullets.get(i).isOffScreen(Gdx.graphics.getHeight())
+    public boolean isOffScreen(float screenHeight) {
+        return rect.y > screenHeight + 50   // bay quá đỉnh
+            || rect.y < -50                // lọt đáy
+            || rect.x < -50
+            || rect.x > Gdx.graphics.getWidth() + 50;
+    }
+
+    // Dự phòng cho code nào gọi không tham số
     public boolean isOffScreen() {
-        return sprite.getY() > com.badlogic.gdx.Gdx.graphics.getHeight();
+        return rect.y > Gdx.graphics.getHeight() + 50
+            || rect.y < -50
+            || rect.x < -50
+            || rect.x > Gdx.graphics.getWidth() + 50;
     }
 }

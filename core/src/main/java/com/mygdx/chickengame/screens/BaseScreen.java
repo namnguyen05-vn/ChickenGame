@@ -1,26 +1,28 @@
-package com.chicken.game;
+package com.mygdx.chickengame.screens;
 
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.mygdx.chickengame.ChickenGame;
+import com.mygdx.chickengame.utils.Assets_Common;
 
 public abstract class BaseScreen extends ScreenAdapter {
     protected final ChickenGame game;
-    protected OrthographicCamera camera;
-    protected FitViewport viewport;
-    protected Stage stage;
-
-    public static final float VIRTUAL_WIDTH = 800;
-    public static final float VIRTUAL_HEIGHT = 480;
+    protected final BitmapFont font;
 
     public BaseScreen(ChickenGame game) {
         this.game = game;
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);
-        stage = new Stage(viewport, game.batch);
+        this.font = Assets_Common.font; // dùng font chung đã load trong Assets_Common.load()
     }
 
-    @Override public void resize(int width, int height) { viewport.update(width, height, true); }
-    @Override public void dispose() { stage.dispose(); }
+    protected void clearScreen(float r, float g, float b) {
+        Gdx.gl.glClearColor(r, g, b, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    @Override
+    public void dispose() {
+        // KHÔNG dispose font ở đây vì font thuộc Assets_Common và sẽ được dispose ở đó
+    }
 }

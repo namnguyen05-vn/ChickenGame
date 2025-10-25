@@ -1,23 +1,31 @@
-package com.chicken.game;
+package com.mygdx.chickengame.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.Input;
+import com.mygdx.chickengame.ChickenGame;
+import com.mygdx.chickengame.utils.Assets_Common;
 
 public class GameOverScreen extends BaseScreen {
-    public GameOverScreen(ChickenGame game) { super(game); }
+
+    public GameOverScreen(ChickenGame game) {
+        super(game);
+    }
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isKeyJustPressed(Keys.ENTER)) game.setScreen(new MenuScreen(game));
+        clearScreen(0f, 0f, 0f);
 
-        Gdx.gl.glClearColor(0,0,0,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
-        Assets.font.getData().setScale(2f);
-        Assets.font.draw(game.batch, "GAME OVER", 320, 280);
-        Assets.font.getData().setScale(1f);
-        Assets.font.draw(game.batch, "Press ENTER to return Menu", 280, 200);
+        Assets_Common.font.draw(game.batch, "GAME OVER", 100, 300);
+        Assets_Common.font.draw(game.batch, "R = Retry Level 1", 100, 260);
+        Assets_Common.font.draw(game.batch, "M = Menu", 100, 230);
         game.batch.end();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            game.goLevel1();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            game.goMenu();
+        }
     }
 }
