@@ -25,8 +25,8 @@ public class Player {
     private int lives = 5; // Số mạng mặc định
     // Trừ mạng khi bị trúng đạn
     public void loseLife() {
-        if (lives > 0) lives--;
-    }
+    lives = 0; // hoặc lives--;
+}
 
     // Kiểm tra còn sống
     public boolean isAlive() {
