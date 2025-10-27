@@ -9,7 +9,7 @@ public class Boss_Bullet {
     private Vector2 position;
     private Vector2 velocity;
     public Rectangle rect;
-    private float speed = 350; // tốc độ đạn px/s
+    private float speed = 50; // tốc độ đạn px/s
 
     // nhận vị trí Boss và Player
     public Boss_Bullet(float startX, float startY, float targetX, float targetY) {

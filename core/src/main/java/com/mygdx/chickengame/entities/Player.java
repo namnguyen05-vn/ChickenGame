@@ -8,12 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.chickengame.utils.Assets_Common;
 
-/**
- * Player có 3 cấp độ.
- * - Cấp 1: bắn 1–3 viên (tăng dần theo cấp đạn)
- * - Cấp 2: bắn chữ V 4 viên, tốc độ nhanh hơn
- * - Cấp 3: bắn chữ V 7 viên, nhanh hơn nữa
- */
+
 
 public class Player {
     public Rectangle rect;
@@ -22,8 +17,10 @@ public class Player {
     private float moveSpeed = 300f;
     private int playerLevel = 1; // giữ cho sử dụng sau này
     private int bulletLevel = 1; // 1..5 (số viên bắn mỗi lần)
-    private int lives = 5; // Số mạng mặc định
+    // Số mạng của player
+    private int lives = 1; // Số mạng mặc định (1)
     // Trừ mạng khi bị trúng đạn
+    // Với lives = 1: lần trúng đầu tiên sẽ làm lives = 0 -> isAlive() trả về false
     public void loseLife() {
         if (lives > 0) lives--;
     }
@@ -109,7 +106,7 @@ public class Player {
     }
 
     public void render(SpriteBatch batch) {
-        // Sử dụng ảnh playerLV3 cho mọi cấp đạn theo yêu cầu
+        // Sử dụng ảnh playerLV3 cho mọi cấp đạn 
         Texture tex = Assets_Common.playerLV3;
         batch.draw(tex, rect.x, rect.y, rect.width, rect.height);
     }
