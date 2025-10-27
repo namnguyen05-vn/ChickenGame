@@ -1,265 +1,94 @@
 package com.mygdx.chickengame.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.chickengame.ChickenGame;
-import com.mygdx.chickengame.entities.Bullet;
-import com.mygdx.chickengame.entities.Enemy2;
-import com.mygdx.chickengame.entities.Enemy_Bullet;
 import com.mygdx.chickengame.entities.Player;
-import com.mygdx.chickengame.entities.PowerUp;
-import com.mygdx.chickengame.utils.Assets_LV2;
+import com.mygdx.chickengame.entities.Bullet;
+import com.mygdx.chickengame.entities.Enemy;
 import com.mygdx.chickengame.utils.Assets_Common;
 
-public class Level2Screen implements Screen {
-    private ChickenGame game;
-    private SpriteBatch batch;
-    private Player player;
-    private Array<Enemy2> enemies;
-    private Array<Bullet> bullets;
-    private Array<Enemy_Bullet> enemyBullets;
-    private Array<PowerUp> powerUps;
+public class Level2Screen extends BaseScreen {
+    private final Player player;
+    private final Array<Bullet> bullets = new Array<>();
+    private final Array<Enemy> enemies = new Array<>();
 
-    // Quản lý wave (đợt kẻ địch)
-    private int wave = 1;
-    private int enemiesKilled = 0;
-    private float spawnTimer = 0;
+    public Level2Screen(ChickenGame game) {
+        super(game);
+        player = new Player();
+        player.resetForNewLevel();
 
-    // Hằng số
-    private static final int WAVE1_ENEMIES = 10;
-    private static final int WAVE2_ENEMIES = 10;
-    private static final int WAVE3_ENEMIES = 15;
-    private static final float SPAWN_INTERVAL = 1.2f; // Sinh kẻ địch mỗi 1.2 giây
-
-    // Spawn counters
-    private int wave1Spawned = 0;
-    private int wave2Spawned = 0;
-    private int wave3Spawned = 0;
-
-    public Level2Screen(ChickenGame game, Player player) {
-        this.game = game;
-        this.batch = new SpriteBatch();
-        this.player = player; // dùng lại player từ màn trước
-        this.enemies = new Array<>();
-        this.bullets = new Array<>();
-        this.enemyBullets = new Array<>();
-        this.powerUps = new Array<>();
-
-        Assets_LV2.load();
-        Assets_LV2.BGMusic.play();
-
-        // Initialize spawn timer
-        spawnTimer = SPAWN_INTERVAL;
-    }
-
-    private void spawnWave1() {
-        if (wave1Spawned < WAVE1_ENEMIES && spawnTimer <= 0) {
-            enemies.add(new Enemy2());
-            wave1Spawned++;
-            spawnTimer = SPAWN_INTERVAL;
+        // spawn nhiều enemy hơn
+        for (int i = 0; i < 10; i++) {
+            enemies.add(new Enemy(60 + i * 60, 450));
         }
+
+        game.session.level = 2;
     }
 
-    private void spawnWave2() {
-        if (wave2Spawned < WAVE2_ENEMIES && spawnTimer <= 0) {
-            enemies.add(new Enemy2());
-            wave2Spawned++;
-            spawnTimer = SPAWN_INTERVAL;
+    private void update(float dt) {
+        player.update(dt, bullets);
+
+        for (Bullet b : bullets) {
+            b.update(dt);
         }
-    }
 
-    private void spawnWave3() {
-        if (wave3Spawned < WAVE3_ENEMIES && spawnTimer <= 0) {
-            enemies.add(new Enemy2());
-            wave3Spawned++;
-            spawnTimer = SPAWN_INTERVAL;
+        for (Enemy e : enemies) {
+            e.update(dt);
+        }
+
+        // clear bullet offscreen
+        for (int i = bullets.size - 1; i >= 0; i--) {
+            if (bullets.get(i).isOffScreen(Gdx.graphics.getHeight())) {
+                bullets.removeIndex(i);
+            }
+        }
+
+        // check win -> boss (sau khi clear hết enemy)
+        boolean allDead = true;
+        for (Enemy e : enemies) {
+            if (!e.isDead()) {
+                allDead = false;
+                break;
+            }
+        }
+        if (allDead) {
+            // nếu bạn muốn qua màn cảnh báo boss trước:
+            // game.goLevelBoss();
+            // còn nếu muốn nhảy thẳng vào boss:
+            game.goBoss();
+        }
+
+        // player chết -> game over
+        if (!player.isAlive()) {
+            game.goGameOver();
         }
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         update(delta);
+        clearScreen(0.05f, 0.1f, 0.05f);
 
-        // vẽ
-        batch.begin();
-        // Sử dụng kích thước màn hình dynamic
-        batch.draw(Assets_LV2.backgroundTex, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        player.render(batch);
-        for (Enemy2 e : enemies)
-            e.render(batch);
-        for (Bullet b : bullets)
-            b.render(batch);
-        for (Enemy_Bullet eb : enemyBullets)
-            eb.render(batch);
-        for (PowerUp p : powerUps)
-            p.render(batch);
-        batch.end();
-    }
+        game.batch.begin();
 
-    private void update(float delta) {
-    // Cập nhật bộ đếm sinh (spawn timer)
-        spawnTimer -= delta;
+        // vẽ player
+        player.render(game.batch);
 
-        // Sinh kẻ địch theo wave hiện tại
-        if (wave == 1) {
-            spawnWave1();
-        } else if (wave == 2) {
-            spawnWave2();
-        } else if (wave == 3) {
-            spawnWave3();
+        // vẽ enemy
+        for (Enemy e : enemies) {
+            e.render(game.batch);
         }
 
-    // Cập nhật player
-        player.update(delta, bullets);
-
-        // Cập nhật enemy và hành vi bắn của chúng, loại bỏ con ra khỏi màn hình
-        for (int i = enemies.size - 1; i >= 0; i--) {
-            Enemy2 e = enemies.get(i);
-            e.update(delta, enemyBullets);
-
-            // Remove enemies that went off-screen
-            if (e.isOffScreen()) {
-                enemies.removeIndex(i);
-            }
+        // vẽ bullet
+        for (Bullet b : bullets) {
+            b.render(game.batch);
         }
 
-        // Cập nhật đạn của player
-        for (int i = bullets.size - 1; i >= 0; i--) {
-            Bullet bullet = bullets.get(i);
-            bullet.update(delta);
+        // HUD
+        Assets_Common.font.draw(game.batch, "LEVEL 2", 20, 460);
+        Assets_Common.font.draw(game.batch, "Lives: " + player.getLives(), 20, 440);
 
-            if (bullet.isOffScreen()) {
-                bullets.removeIndex(i);
-            }
-        }
-
-        // Cập nhật đạn của kẻ địch
-        for (int i = enemyBullets.size - 1; i >= 0; i--) {
-            Enemy_Bullet enemyBullet = enemyBullets.get(i);
-            enemyBullet.update(delta);
-
-            if (enemyBullet.isOffScreen()) {
-                enemyBullets.removeIndex(i);
-            }
-        }
-
-        // Cập nhật power-up
-        for (int i = powerUps.size - 1; i >= 0; i--) {
-            PowerUp powerUp = powerUps.get(i);
-            powerUp.update(delta);
-
-            if (powerUp.isOffScreen()) {
-                powerUps.removeIndex(i);
-            }
-        }
-
-    // Kiểm tra va chạm
-        checkCollisions();
-
-        // Kiểm tra tiến trình wave
-        if (wave == 1 && wave1Spawned >= WAVE1_ENEMIES && enemies.size == 0) {
-            wave = 2;
-            spawnTimer = SPAWN_INTERVAL; // Reset spawn timer cho wave 2
-        } else if (wave == 2 && wave2Spawned >= WAVE2_ENEMIES && enemies.size == 0) {
-            wave = 3;
-            spawnTimer = SPAWN_INTERVAL; // Reset spawn timer cho wave 3
-        } else if (wave == 3 && wave3Spawned >= WAVE3_ENEMIES && enemies.size == 0) {
-            // Chuyển sang Level Boss, truyền player giữ nguyên mạng nhưng reset vị trí/cấp
-            Assets_LV2.BGMusic.stop();
-            player.resetForNewLevel();
-            game.setScreen(new LevelBoss(game, player));
-        }
-    }
-
-    private void checkCollisions() {
-        // Player bullet vs Enemy collisions
-        for (int i = bullets.size - 1; i >= 0; i--) {
-            Bullet bullet = bullets.get(i);
-            for (int j = enemies.size - 1; j >= 0; j--) {
-                Enemy2 enemy = enemies.get(j);
-
-                if (bullet.rect.overlaps(enemy.rect)) {
-                    enemy.takeDamage((int) bullet.getDamage());
-                    bullets.removeIndex(i);
-
-                    if (enemy.isDead()) {
-                        Assets_LV2.ChickenHit.play(0.3f);
-
-                        // Drop power-up randomly (15% chance)
-                        if (Math.random() < 0.15f) {
-                            powerUps.add(new PowerUp(enemy.rect.x, enemy.rect.y));
-                        }
-
-                        enemies.removeIndex(j);
-                        enemiesKilled++;
-                    }
-                    break;
-                }
-            }
-        }
-
-        // Player vs Enemy collisions (player dies)
-        for (Enemy2 enemy : enemies) {
-            if (player.rect.overlaps(enemy.rect)) {
-                Assets_Common.PlayerExplosion.play(0.5f);
-                Assets_LV2.BGMusic.stop();
-                game.setScreen(new GameOverScreen(game));
-                return;
-            }
-        }
-
-        // Player vs Enemy Bullet collisions (player dies)
-        for (Enemy_Bullet enemyBullet : enemyBullets) {
-            if (player.rect.overlaps(enemyBullet.rect)) {
-                Assets_Common.PlayerExplosion.play(0.5f);
-                Assets_LV2.BGMusic.stop();
-                game.setScreen(new GameOverScreen(game));
-                return;
-            }
-        }
-
-        // Player vs PowerUp collisions
-        for (int i = powerUps.size - 1; i >= 0; i--) {
-            PowerUp powerUp = powerUps.get(i);
-            if (player.rect.overlaps(powerUp.rect)) {
-                player.upgrade();
-                powerUps.removeIndex(i);
-            }
-        }
-    }
-
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-        Assets_LV2.BGMusic.pause();
-    }
-
-    @Override
-    public void resume() {
-        Assets_LV2.BGMusic.play();
-    }
-
-    @Override
-    public void hide() {
-        Assets_LV2.BGMusic.stop();
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        Assets_LV2.dispose();
+        game.batch.end();
     }
 }
