@@ -123,6 +123,14 @@ public class LevelBoss implements Screen {
             boss_50.update(delta);
             currentBossHp = boss_50.getHp();
         }
+        // 🔥 Kiểm tra nếu Boss_50 chết thì sinh Boss_100 (Boss cuối)
+        if (!isPhase1 && boss_50 != null && boss_50.isDead()) {
+            System.out.println("Boss 50 died — spawning Boss 100!");
+            boss_50 = null;
+            boss_100 = new Boss_100(player);  // Tạo lại boss 100
+            isPhase1 = true; // Có thể xem như pha 3, hoặc reuse pha 1 để logic render hoạt động
+            currentBossHp = boss_100.getHp();
+        }
 
         // Cập nhật các enemy và loại bỏ nếu ra khỏi màn
         for (int i = enemies1.size - 1; i >= 0; i--) {

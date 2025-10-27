@@ -99,4 +99,8 @@ public class Boss_50 {
     public void takeDamage(float damage) {
         hp -= damage;
     }
+    public boolean isDead() {
+    return hp <= 0;
+}
+
 }
