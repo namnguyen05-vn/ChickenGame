@@ -88,6 +88,7 @@ public class Player {
         // Tăng cấp đạn (tối đa 5)
         if (bulletLevel < 5) {
             bulletLevel++;
+            Assets_Common.PowerUpSound.play(0.5f);
         }
     }
 
