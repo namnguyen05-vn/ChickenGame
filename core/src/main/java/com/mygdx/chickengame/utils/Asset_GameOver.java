@@ -9,11 +9,13 @@ public class Asset_GameOver {
     public static Texture menuButton;
     public static Music failedMusic;
     public static Texture backgroundTex;
+    public static Texture GameOverTex;
 
     public static void load() {
-        backgroundTex = new Texture("Image/background_menu.png");
-        playAgainButton = new Texture("Image/PlayAgainButton.png");
-        menuButton = new Texture("Image/EscapeButton.png");
+        backgroundTex = new Texture("Image/background_GameOver.png");
+        GameOverTex = new Texture("Image/GameOverText.png");
+        playAgainButton = new Texture("Image/TryAgainButton.png");
+        menuButton = new Texture("Image/MenuButton.png");
         failedMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/FailedSound.ogg"));
         failedMusic.setLooping(false);
         failedMusic.setVolume(0.6f);
@@ -24,5 +26,6 @@ public class Asset_GameOver {
         menuButton.dispose();
         failedMusic.dispose();
         backgroundTex.dispose();
+        GameOverTex.dispose();
     }
 }
