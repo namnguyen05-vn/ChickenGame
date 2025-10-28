@@ -19,13 +19,12 @@ public class Asset_Winning {
         winningMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/WinningSound.ogg"));
         winningMusic.setLooping(false);
         winningMusic.setVolume(0.7f);
+
+        // --- Áp dụng Linear Filter ---
+        AssetUtils.applyLinearFilter(backgroundTex, VictoryTex, playAgainButton, menuButton);
     }
 
     public static void dispose() {
-        backgroundTex.dispose();
-        playAgainButton.dispose();
-        menuButton.dispose();
-        winningMusic.dispose();
-        VictoryTex.dispose();
+        AssetUtils.disposeResources(backgroundTex, playAgainButton, menuButton, winningMusic, VictoryTex);
     }
 }

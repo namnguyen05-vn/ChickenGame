@@ -23,6 +23,11 @@ public class Level1Screen implements Screen {
     private Array<Bullet> bullets;
     private Array<PowerUp> powerUps;
 
+    // Số lượng power-up đã rơi trong màn
+    private int powerUpCount = 0;
+    // Giới hạn số lượng power-up tối đa cho màn 1
+    private static final int MAX_POWER_UPS = 2;
+
     // Quản lý wave (đợt kẻ địch)
     private int wave = 1;
     private int enemiesKilled = 0;
@@ -166,9 +171,10 @@ public class Level1Screen implements Screen {
                     // Enemy bị hit - gà con chết luôn với 1 hit
                     Assets_LV1.ChickenHit.play(0.3f);
 
-                    // Drop power-up randomly (20% chance)
-                    if (Math.random() < 0.2f) {
+                    // Sinh power-up với xác suất 10% và kiểm tra giới hạn tối đa
+                    if (Math.random() < 0.1f && powerUpCount < MAX_POWER_UPS) {
                         powerUps.add(new PowerUp(enemy.rect.x, enemy.rect.y));
+                        powerUpCount++; // Tăng biến đếm khi thêm power-up mới
                     }
 
                     enemies.removeIndex(j);

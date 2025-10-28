@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.chickengame.ChickenGame;
 import com.mygdx.chickengame.entities.Bullet;
 import com.mygdx.chickengame.entities.Enemy2;
@@ -22,6 +23,11 @@ public class Level2Screen implements Screen {
     private Array<Bullet> bullets;
     private Array<Enemy_Bullet> enemyBullets;
     private Array<PowerUp> powerUps;
+
+    // Số lượng power-up đã rơi trong màn
+    private int powerUpCount = 0;
+    // Giới hạn số lượng power-up tối đa cho màn 2
+    private static final int MAX_POWER_UPS = 3;
 
     // Quản lý wave (đợt kẻ địch)
     private int wave = 1;
@@ -191,9 +197,11 @@ public class Level2Screen implements Screen {
                     if (enemy.isDead()) {
                         Assets_LV2.ChickenHit.play(0.3f);
 
-                        // Drop power-up randomly (15% chance)
-                        if (Math.random() < 0.15f) {
+
+                        // Sinh power-up với xác suất 10% và kiểm tra giới hạn tối đa
+                        if (Math.random() < 0.1f && powerUpCount < MAX_POWER_UPS) {
                             powerUps.add(new PowerUp(enemy.rect.x, enemy.rect.y));
+                            powerUpCount++; // Tăng biến đếm khi thêm power-up mới
                         }
 
                         enemies.removeIndex(j);
@@ -261,5 +269,17 @@ public class Level2Screen implements Screen {
     public void dispose() {
         batch.dispose();
         Assets_LV2.dispose();
+    }
+
+    // Sinh ngẫu nhiên một số PowerUp trong khoảng [min,max] tại các vị trí ngẫu nhiên trên màn
+    private void spawnRandomPowerUps(int min, int max) {
+        int count = MathUtils.random(min, max);
+        int screenW = Gdx.graphics.getWidth();
+        int screenH = Gdx.graphics.getHeight();
+        for (int i = 0; i < count; i++) {
+            float x = MathUtils.random(20, Math.max(20, screenW - 52));
+            float y = MathUtils.random(screenH / 2, screenH - 80);
+            powerUps.add(new PowerUp(x, y));
+        }
     }
 }

@@ -1,0 +1,21 @@
+[33m9b72eca[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mNguoi_1[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{0}: checkout: moving from Nguoi_1 to Nguoi_1
+[33m9b72eca[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mNguoi_1[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{1}: checkout: moving from main to Nguoi_1
+[33m9b72eca[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mNguoi_1[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{2}: pull origin main: Fast-forward
+[33mbab168d[m HEAD@{3}: checkout: moving from Nguoi_1 to main
+[33m9b72eca[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mNguoi_1[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{4}: pull origin main: Fast-forward
+[33m3713926[m[33m ([m[1;31morigin/Nguoi_1[m[33m)[m HEAD@{5}: checkout: moving from main to Nguoi_1
+[33mbab168d[m HEAD@{6}: checkout: moving from Nguoi_1 to main
+[33m3713926[m[33m ([m[1;31morigin/Nguoi_1[m[33m)[m HEAD@{7}: commit: chỉnh lại trạng thái player khi qua màn mới
+[33md4e9816[m HEAD@{8}: commit: chỉnh lại đạn Player
+[33ma3a1748[m HEAD@{9}: commit: update cấp đạn
+[33m56793e8[m HEAD@{10}: commit: Chạy Thử
+[33m9d7b446[m HEAD@{11}: checkout: moving from main to Nguoi_1
+[33mbab168d[m HEAD@{12}: checkout: moving from Nguoi_1 to main
+[33m9d7b446[m HEAD@{13}: commit: Update Phần Player và Bullet lần 2
+[33me1efe7d[m HEAD@{14}: commit (merge): Hoàn tất merge main vào Nguoi_1
+[33mc531c30[m HEAD@{15}: reset: moving to HEAD
+[33mc531c30[m HEAD@{16}: checkout: moving from Nguoi_1 to Nguoi_1
+[33mc531c30[m HEAD@{17}: checkout: moving from main to Nguoi_1
+[33mbab168d[m HEAD@{18}: checkout: moving from Nguoi_1 to main
+[33mc531c30[m HEAD@{19}: checkout: moving from main to Nguoi_1
+[33mbab168d[m HEAD@{20}: clone: from https://github.com/namnguyen05-vn/ChickenGame.git

@@ -33,18 +33,11 @@ public class Assets_LV3 {
         BGMusic.setLooping(true);
         BGMusic.setVolume(0.5f);
 
+        // --- Áp dụng Linear Filter ---
+        AssetUtils.applyLinearFilter(enemyTex_Boss_100HP, enemyTex_Boss_50HP, enemyTex_Chicken2, enemyTex_Chick, backgroundTex, ChickenBullet, BossBullet);
     }
     public static void dispose() {
-        enemyTex_Boss_100HP.dispose();
-        enemyTex_Boss_50HP.dispose();
-        enemyTex_Chicken2.dispose();
-        enemyTex_Chick.dispose();
-        backgroundTex.dispose();
-        ChickenBullet.dispose();
-        BossBullet.dispose();
-        ChickenHit.dispose();
-        BossHit.dispose();
-        BGMusic.dispose();
+        AssetUtils.disposeResources(enemyTex_Boss_100HP, enemyTex_Boss_50HP, enemyTex_Chicken2, enemyTex_Chick, backgroundTex, ChickenBullet, BossBullet, ChickenHit, BossHit, BGMusic);
     }
 }
 
