@@ -22,13 +22,12 @@ public class Assets_Menu {
         BGMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/BackgroundMusic.ogg"));
         BGMusic.setLooping(true);
         BGMusic.setVolume(0.5f);
+
+        // --- Áp dụng Linear Filter ---
+        AssetUtils.applyLinearFilter(Title_Game, backgroundTex, Start, Escape);
     }
 
     public static void dispose() {
-        Title_Game.dispose();
-        backgroundTex.dispose();
-        BGMusic.dispose();
-        Start.dispose();
-        Escape.dispose();
+        AssetUtils.disposeResources(Title_Game, backgroundTex, BGMusic, Start, Escape);
     }
 }
