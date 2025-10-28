@@ -14,7 +14,7 @@ public class Assets_Menu {
 
     public static Music BGMusic;
     public static void load(){
-        Title_Game = new Texture("Image/MenuTitle2.png");
+            Title_Game = new Texture("Image/MenuTitle2.png");
         backgroundTex = new Texture("Image/background_menu.png");
         Start = new Texture("Image/StartButton.png");
         Escape = new Texture("Image/EscapeButton.png");

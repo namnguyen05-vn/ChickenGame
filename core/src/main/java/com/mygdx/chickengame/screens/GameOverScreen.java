@@ -6,13 +6,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.chickengame.ChickenGame;
 import com.mygdx.chickengame.utils.Asset_GameOver;
 import com.mygdx.chickengame.utils.Assets_Common;
-import com.mygdx.chickengame.utils.GameSession;
 import com.mygdx.chickengame.utils.ParticleEffect;
 import com.mygdx.chickengame.utils.PlayerState;
 import com.mygdx.chickengame.utils.UIHelper;
@@ -24,7 +22,7 @@ public class GameOverScreen implements Screen {
 
     private int SCREEN_WIDTH, SCREEN_HEIGHT;
 
-    private Rectangle playAgainBtn, menuBtn;
+    private Rectangle playAgainBtn, menuBtn; // TryAgain ở TRÊN, menu ở DƯỚI
     private Vector3 touchPos;
 
     private float animationTime = 0f;
@@ -48,12 +46,14 @@ public class GameOverScreen implements Screen {
         this.SCREEN_HEIGHT = Gdx.graphics.getHeight();
 
         Assets_Common.load();
-        Asset_GameOver.load();
+        Asset_GameOver.load(); // CHANGED: âm FailedSound
 
         setupButtons();
         particles = new ParticleEffect();
 
-        if (Asset_GameOver.BGMusic != null && !Asset_GameOver.BGMusic.isPlaying()) {
+        // CHANGED: phát FailedSound (nếu có)
+        if (Asset_GameOver.BGMusic != null) {
+            Asset_GameOver.BGMusic.stop();
             Asset_GameOver.BGMusic.play();
         }
     }
@@ -62,12 +62,14 @@ public class GameOverScreen implements Screen {
         int totalH = (int)(BTN_H * 2 + BTN_SP);
         int startY = (SCREEN_HEIGHT / 2) - (totalH / 2);
 
+        // Try again ở TRÊN
         playAgainBtn = new Rectangle(
             SCREEN_WIDTH / 2f - BTN_W / 2f,
             startY + BTN_H + BTN_SP,
             BTN_W, BTN_H
         );
 
+        // Menu ở DƯỚI
         menuBtn = new Rectangle(
             SCREEN_WIDTH / 2f - BTN_W / 2f,
             startY,
@@ -86,12 +88,12 @@ public class GameOverScreen implements Screen {
         isPlayAgainHovered = playAgainBtn.contains(touchPos.x, touchPos.y);
         isMenuHovered      = menuBtn.contains(touchPos.x, touchPos.y);
 
-        handleInput();
+        handleInput(); // CHANGED: chỉ dùng chuột (ESC để thoát)
 
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // BG + Title + Particles
+        // BG + Title + Particles (giống menu)
         batch.begin();
         batch.setColor(1,1,1,1);
 
@@ -104,16 +106,7 @@ public class GameOverScreen implements Screen {
         drawTitle();
         batch.end();
 
-        // Khung đen mờ sau nút
-        shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.setColor(0, 0, 0, isPlayAgainHovered ? 0.75f : 0.68f);
-        shape.rect(playAgainBtn.x - 40, playAgainBtn.y - 15, playAgainBtn.width + 80, playAgainBtn.height + 30);
-
-        shape.setColor(0, 0, 0, isMenuHovered ? 0.75f : 0.68f);
-        shape.rect(menuBtn.x - 40, menuBtn.y - 15, menuBtn.width + 80, menuBtn.height + 30);
-        shape.end();
-
-        // Vẽ nút (ảnh chữ) đúng kích thước 240×70
+        // Vẽ nút (ảnh chữ)
         batch.begin();
         drawButton(Asset_GameOver.btnPlayAgainTex, playAgainBtn, isPlayAgainHovered);
         drawButton(Asset_GameOver.btnMenuTex,      menuBtn,      isMenuHovered);
@@ -137,57 +130,46 @@ public class GameOverScreen implements Screen {
 
     private void drawButton(com.badlogic.gdx.graphics.Texture tex, Rectangle bounds, boolean hovered) {
         if (tex == null) return;
-        // nhấn nổi nhẹ khi hover
         float dy = hovered ? UIHelper.calculateFloatingOffset(animationTime, 3f, 4f) : 0f;
         batch.setColor(1, 1, 1, 1);
         batch.draw(tex, bounds.x, bounds.y + dy, bounds.width, bounds.height);
     }
 
     private void handleInput() {
-        // ESC: thoát
+        // CHANGED: Chỉ dùng chuột để thao tác (giống yêu cầu). ESC vẫn cho thoát.
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             click();
             Gdx.app.exit();
             return;
         }
 
-        // R / Enter / Space: chơi lại màn vừa thua
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)
-            || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)
-            || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            restart();
-            return;
-        }
-
-        // M: về menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-            toMenu();
-            return;
-        }
-
-        // Chuột
         if (Gdx.input.justTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             touchPos.y = SCREEN_HEIGHT - touchPos.y;
 
-            if (playAgainBtn.contains(touchPos.x, touchPos.y)) { restart(); return; }
-            if (menuBtn.contains(touchPos.x, touchPos.y))      { toMenu();  return; }
-        }
-    }
+            // Try Again → luôn bắt đầu Level 1
+            if (playAgainBtn.contains(touchPos.x, touchPos.y)) {
+                click();
+                if (Asset_GameOver.BGMusic != null) Asset_GameOver.BGMusic.stop();
+                PlayerState.reset(); // reset state nếu bạn muốn
+                game.setScreen(new Level1Screen(game)); // CHANGED: luôn LV1
+                return;
+            }
 
-    private void restart() {
-        click();
-        if (Asset_GameOver.BGMusic != null) Asset_GameOver.BGMusic.stop();
-        PlayerState.reset();
-        if (!GameSession.restartLastLevel(game)) {
-            game.setScreen(new Level1Screen(game)); // fallback
+            // Menu → về MenuScreen
+            if (menuBtn.contains(touchPos.x, touchPos.y)) {
+                click();
+                if (Asset_GameOver.BGMusic != null) Asset_GameOver.BGMusic.stop();
+                game.setScreen(new MenuScreen(game));
+                return;
+            }
         }
-    }
 
-    private void toMenu() {
-        click();
-        if (Asset_GameOver.BGMusic != null) Asset_GameOver.BGMusic.stop();
-        game.setScreen(new MenuScreen(game));
+        // (BỎ cơ chế phím M/R/ENTER/SPACE — theo yêu cầu)
+        // if (Gdx.input.isKeyJustPressed(Input.Keys.M)) { ... }      // REMOVED
+        // if (Gdx.input.isKeyJustPressed(Input.Keys.R)) { ... }      // REMOVED
+        // if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) { ... }  // REMOVED
+        // if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) { ... }  // REMOVED
     }
 
     private void click() {
@@ -199,5 +181,10 @@ public class GameOverScreen implements Screen {
     @Override public void pause()  { if (Asset_GameOver.BGMusic != null) Asset_GameOver.BGMusic.pause(); }
     @Override public void resume() { if (Asset_GameOver.BGMusic != null) Asset_GameOver.BGMusic.play(); }
     @Override public void hide()   {}
-    @Override public void dispose() { if (batch != null) batch.dispose(); if (shape != null) shape.dispose(); if (particles != null) particles.dispose(); }
+    @Override public void dispose() {
+        if (batch != null) batch.dispose();
+        if (shape != null) shape.dispose();
+        if (particles != null) particles.dispose();
+        // Tùy bạn: có thể gọi Asset_GameOver.dispose() khi chắc chắn không quay lại màn này nữa
+    }
 }

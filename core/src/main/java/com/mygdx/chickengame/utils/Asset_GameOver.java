@@ -6,25 +6,26 @@ import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Asset cho màn Game Over.
- * - Ảnh: background_gameover.png, Gameover.png, playagain.png, menugameover.png (thư mục Image/)
- * - Nhạc: dùng lại nhạc menu (Assets_Menu.BGMusic).
+ * - Ảnh: background_GameOver.png, TryAgainButton.png, menugameover.png, GameOverText.png (thư mục Image/)
+ * - Nhạc/Âm thanh: Music/FailedSound.ogg
  * - Có setFilter Linear để thu nhỏ/phóng to chữ mượt hơn.
  */
 public class Asset_GameOver {
-    public static Texture backgroundTex;     // Image/background_gameover.png
-    public static Texture titleGameOverTex;  // Image/Gameover.png
-    public static Texture btnPlayAgainTex;   // Image/playagain.png
-    public static Texture btnMenuTex;        // Image/menugameover.png
+    public static Texture backgroundTex;     // Image/background_GameOver.png   // CHANGED (tên ảnh)
+    public static Texture titleGameOverTex;  // Image/GameOverText.png
+    public static Texture btnPlayAgainTex;   // Image/TryAgainButton.png        // CHANGED (tên ảnh)
+    public static Texture btnMenuTex;        // Image/menugameover.png          // giữ nguyên
 
-    public static Music BGMusic;             // dùng lại nhạc menu
+    public static Music BGMusic;             // FailedSound.ogg                 // CHANGED (nguồn nhạc)
     private static boolean loaded = false;
 
     public static void load() {
         if (loaded) return;
 
-        backgroundTex    = safeLoad("Image/background_gameover.png");
-        titleGameOverTex = safeLoad("Image/Gameover.png");
-        btnPlayAgainTex  = safeLoad("Image/playagain.png");
+        // CHANGED: đồng bộ với tên file bạn có trong thư mục Image/
+        backgroundTex    = safeLoad("Image/background_GameOver.png"); // CHANGED
+        titleGameOverTex = safeLoad("Image/GameOverText.png");
+        btnPlayAgainTex  = safeLoad("Image/TryAgainButton.png");      // CHANGED
         btnMenuTex       = safeLoad("Image/menugameover.png");
 
         // filter mượt khi scale
@@ -33,10 +34,14 @@ public class Asset_GameOver {
         if (btnPlayAgainTex  != null) btnPlayAgainTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         if (btnMenuTex       != null) btnMenuTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        // nhạc dùng lại từ menu
-        BGMusic = Assets_Menu.BGMusic; // có thể null nếu menu chưa load
-        if (BGMusic != null) {
-            BGMusic.setLooping(true);
+        // CHANGED: dùng FailedSound.ogg thay vì nhạc menu
+        try {
+            BGMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/FailedSound.ogg"));
+            BGMusic.setLooping(false);  // âm thất bại chơi 1 lần
+            BGMusic.setVolume(0.8f);
+        } catch (Exception e) {
+            Gdx.app.error("Asset_GameOver", "Không tìm thấy Music/FailedSound.ogg: " + e.getMessage());
+            BGMusic = null;
         }
 
         loaded = true;
@@ -57,11 +62,12 @@ public class Asset_GameOver {
     }
 
     public static void dispose() {
-        // KHÔNG dispose BGMusic vì dùng chung với menu
+        // CHANGED: có thể dispose nhạc vì không dùng chung như menu
         if (backgroundTex    != null) backgroundTex.dispose();
         if (titleGameOverTex != null) titleGameOverTex.dispose();
         if (btnPlayAgainTex  != null) btnPlayAgainTex.dispose();
         if (btnMenuTex       != null) btnMenuTex.dispose();
+        if (BGMusic          != null) BGMusic.dispose(); // CHANGED
         loaded = false;
     }
 }
