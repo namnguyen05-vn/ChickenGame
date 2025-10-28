@@ -13,7 +13,7 @@ public class Asset_Winning {
 
     public static void load() {
         backgroundTex = new Texture("Image/background_Winning.png");
-        VictoryTex = new Texture("Image/VictoryTex.png");
+        VictoryTex = new Texture("Image/VictoryText.png");
         playAgainButton = new Texture("Image/PlayAgainButton.png");
         menuButton = new Texture("Image/MenuButton.png");
         winningMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/WinningSound.ogg"));
