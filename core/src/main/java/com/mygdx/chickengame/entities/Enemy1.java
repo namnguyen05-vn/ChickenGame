@@ -8,7 +8,7 @@ import com.mygdx.chickengame.utils.Assets_LV1;
 public class Enemy1 {
     public Rectangle rect;
     private float speedX, speedY;
-    private int hp = 1; // Gà con chỉ có 1 HP
+    private int hp = 2; // Gà con chỉ có 1 HP
 
     // Constants
     private static final int BORDER_MARGIN = 20; // Margin từ viền

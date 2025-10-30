@@ -9,7 +9,7 @@ import com.mygdx.chickengame.utils.Assets_LV3;
 public class Boss_100 {
     public Rectangle rect;
     private float speedX, speedY;
-    private float hp = 30;              // máu Boss
+    private float hp = 100;              // máu Boss
     private float shootInterval;        // thời gian chờ giữa 2 phát bắn
     private float time_last = 0f;
     private float time_spawm = 0f;
@@ -21,11 +21,11 @@ public class Boss_100 {
     public Boss_100(Player player) {
         this.player = player;
 
-        rect = new Rectangle(350, 350, 231, 130);
-        speedX = 75;
-        speedY = 0;
+        rect = new Rectangle(350, 500, 231, 130);
+        speedX = 50;
+        speedY = 50;
 
-        shootInterval = MathUtils.random(0.5f, 0.9f);
+        shootInterval = MathUtils.random(0.8f, 1.2f);
         cd_spawm = 3f;
         bullets = new Array<>();
         enemy1 = new Array<>();
@@ -37,7 +37,7 @@ public class Boss_100 {
 
         // Bật lại khi chạm viền
         if (rect.x < 50 || rect.x > 700 - rect.width) speedX = -speedX;
-        if (rect.y < 449 || rect.y > 452 - rect.height) speedY = -speedY;
+        if (rect.y < 450 || rect.y > 700 - rect.height) speedY = -speedY;
 
         // Tăng thời gian chờ
         time_last += delta;
@@ -51,7 +51,7 @@ public class Boss_100 {
             bullets.add(new Boss_Bullet(rect.x + rect.width-195, rect.y, playerX, playerY));
 
             time_last = 0f;
-            shootInterval = MathUtils.random(0.5f, 0.9f);
+            shootInterval = MathUtils.random(0.8f, 1.2f);
         }
 
         time_spawm += delta;
