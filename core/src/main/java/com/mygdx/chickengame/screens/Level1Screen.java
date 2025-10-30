@@ -35,8 +35,8 @@ public class Level1Screen implements Screen {
     private boolean levelComplete = false;
 
     // Hằng số
-    private static final int WAVE1_ENEMIES = 0;
-    private static final int WAVE2_ENEMIES = 0;
+    private static final int WAVE1_ENEMIES = 5;
+    private static final int WAVE2_ENEMIES = 10;
 
     public Level1Screen(ChickenGame game) {
         this.game = game;
