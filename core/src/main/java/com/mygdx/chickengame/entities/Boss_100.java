@@ -9,7 +9,7 @@ import com.mygdx.chickengame.utils.Assets_LV3;
 public class Boss_100 {
     public Rectangle rect;
     private float speedX, speedY;
-    private float hp = 30;              // máu Boss
+    private float hp = 100f;              // máu Boss
     private float shootInterval;        // thời gian chờ giữa 2 phát bắn
     private float time_last = 0f;
     private float time_spawm = 0f;
