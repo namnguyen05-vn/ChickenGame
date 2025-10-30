@@ -34,7 +34,8 @@ public class LevelBoss implements Screen {
 
     private float maxBossHp = 100f;
     private float currentBossHp = 100f;
-    private boolean isPhase1 = true;
+    private boolean isPhase1 = true; // Phase 1: 100-50% HP, Phase 2: 50-0% HP
+    private float spawnTimer = 0f;
     private boolean bossDefeated = false;
 
     public LevelBoss(ChickenGame game, Player player) {
@@ -91,7 +92,49 @@ public class LevelBoss implements Screen {
             currentBossHp = boss_50.getHp();
         }
 
+        // Update enemies and remove off-screen ones
+        for (int i = enemies1.size - 1; i >= 0; i--) {
+            Enemy1 e = enemies1.get(i);
+            e.update(delta);
+
+            // Remove enemies that went off-screen
+            if (e.isOffScreen()) {
+                enemies1.removeIndex(i);
+            }
+        }
+
+        for (int i = enemies3.size - 1; i >= 0; i--) {
+            Enemy3 e = enemies3.get(i);
+            e.update(delta);
+
+            // Collect bullets from enemies
+            enemyBullets.addAll(e.bullets);
+            e.bullets.clear();
+
+            // Remove enemies that went off-screen
+            if (e.isOffScreen()) {
+                enemies3.removeIndex(i);
+            }
+        }
+
+        // Update bullets
         updateBullets(delta);
+
+        // Update power-ups
+        for (int i = powerUps.size - 1; i >= 0; i--) {
+            PowerUp powerUp = powerUps.get(i);
+            powerUp.update(delta);
+            if (powerUp.isOffScreen()) {
+                powerUps.removeIndex(i);
+            }
+        }
+
+        // Check phase transition (50% HP)
+        if (isPhase1 && currentBossHp <= maxBossHp / 2) {
+            transitionToPhase2();
+        }
+
+        // Check collisions
         checkCollisions();
 
         if (isPhase1 && currentBossHp <= maxBossHp / 2) transitionToPhase2();
@@ -119,14 +162,23 @@ public class LevelBoss implements Screen {
             if (bb.isOffScreen()) bossBullets.removeIndex(i);
         }
 
-        // Gom enemy từ boss (nếu có)
+        // Update enemy bullets
+        for (int i = enemyBullets.size - 1; i >= 0; i--) {
+            Enemy_Bullet enemyBullet = enemyBullets.get(i);
+            enemyBullet.update(delta);
+            if (enemyBullet.isOffScreen()) {
+                enemyBullets.removeIndex(i);
+            }
+        }
+
+        // Spawn enemies from boss
         if (boss_100 != null) {
-            // enemies1.addAll(boss_100.enemy1); // nếu boss1 sinh Enemy1
-            // boss_100.enemy1.clear();
+            enemies1.addAll(boss_100.enemy1);
+            boss_100.enemy1.clear();
         }
         if (boss_50 != null) {
-            // enemies3.addAll(boss_50.enemy3);  // nếu boss2 sinh Enemy3
-            // boss_50.enemy3.clear();
+            enemies3.addAll(boss_50.enemy3);
+            boss_50.enemy3.clear();
         }
     }
 
@@ -160,16 +212,93 @@ public class LevelBoss implements Screen {
             }
         }
 
-        // Player chết
-        for (Boss_Bullet bb : bossBullets) {
-            if (player.rect.overlaps(bb.rect)) {
+        // Player bullets vs Enemies
+        checkPlayerBulletsVsEnemies();
+
+        // Player vs Enemies/Bullets (Player dies)
+        checkPlayerCollisions();
+
+        // Player vs PowerUps
+        for (int i = powerUps.size - 1; i >= 0; i--) {
+            PowerUp powerUp = powerUps.get(i);
+            if (player.rect.overlaps(powerUp.rect)) {
+                player.upgrade();
+                powerUps.removeIndex(i);
+            }
+        }
+    }
+
+    private void checkPlayerBulletsVsEnemies() {
+        // vs Enemy1 (chicks)
+        for (int i = bullets.size - 1; i >= 0; i--) {
+            Bullet bullet = bullets.get(i);
+            for (int j = enemies1.size - 1; j >= 0; j--) {
+                Enemy1 enemy = enemies1.get(j);
+                if (bullet.rect.overlaps(enemy.rect)) {
+                    Assets_LV3.ChickenHit.play(0.3f);
+
+                    if (Math.random() < 0.3f) {
+                        powerUps.add(new PowerUp(enemy.rect.x, enemy.rect.y));
+                    }
+
+                    enemies1.removeIndex(j);
+                    bullets.removeIndex(i);
+                    break;
+                }
+            }
+        }
+
+        // vs Enemy3 (big chickens)
+        for (int i = bullets.size - 1; i >= 0; i--) {
+            Bullet bullet = bullets.get(i);
+            for (int j = enemies3.size - 1; j >= 0; j--) {
+                Enemy3 enemy = enemies3.get(j);
+                if (bullet.rect.overlaps(enemy.rect)) {
+                    enemy.takeDamage((int) bullet.getDamage());
+                    bullets.removeIndex(i);
+
+                    if (enemy.isDead()) {
+                        Assets_LV3.ChickenHit.play(0.3f);
+
+                        if (Math.random() < 0.25f) {
+                            powerUps.add(new PowerUp(enemy.rect.x, enemy.rect.y));
+                        }
+
+                        enemies3.removeIndex(j);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkPlayerCollisions() {
+        // vs Enemies
+        for (Enemy1 enemy : enemies1) {
+            if (player.rect.overlaps(enemy.rect)) {
                 playerDies();
                 return;
             }
         }
 
-        for (Enemy_Bullet eb : enemyBullets) {
-            if (player.rect.overlaps(eb.rect)) {
+        for (Enemy3 enemy : enemies3) {
+            if (player.rect.overlaps(enemy.rect)) {
+                playerDies();
+                return;
+            }
+        }
+
+        // vs Boss bullets
+        for (Boss_Bullet bossBullet : bossBullets) {
+            if (player.rect.overlaps(bossBullet.rect)) {
+                playerDies();
+                return;
+            }
+        }
+
+        // vs Enemy bullets
+        for (Enemy_Bullet enemyBullet : enemyBullets) {
+            if (player.rect.overlaps(enemyBullet.rect)) {
                 playerDies();
                 return;
             }

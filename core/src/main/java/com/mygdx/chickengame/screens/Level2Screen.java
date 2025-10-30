@@ -35,9 +35,9 @@ public class Level2Screen implements Screen {
     private float spawnTimer = 0;
 
     // Hằng số
-    private static final int WAVE1_ENEMIES = 10;
-    private static final int WAVE2_ENEMIES = 10;
-    private static final int WAVE3_ENEMIES = 15;
+    private static final int WAVE1_ENEMIES = 0;
+    private static final int WAVE2_ENEMIES = 0;
+    private static final int WAVE3_ENEMIES = 0;
     private static final float SPAWN_INTERVAL = 1.2f; // Sinh kẻ địch mỗi 1.2 giây
 
     // Spawn counters
