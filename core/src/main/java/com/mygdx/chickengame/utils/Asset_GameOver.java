@@ -19,13 +19,12 @@ public class Asset_GameOver {
         failedMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/FailedSound.ogg"));
         failedMusic.setLooping(false);
         failedMusic.setVolume(0.6f);
+
+        // --- Áp dụng Linear Filter ---
+        AssetUtils.applyLinearFilter(backgroundTex, GameOverTex, playAgainButton, menuButton);
     }
 
     public static void dispose() {
-        playAgainButton.dispose();
-        menuButton.dispose();
-        failedMusic.dispose();
-        backgroundTex.dispose();
-        GameOverTex.dispose();
+        AssetUtils.disposeResources(playAgainButton, menuButton, failedMusic, backgroundTex, GameOverTex);
     }
 }

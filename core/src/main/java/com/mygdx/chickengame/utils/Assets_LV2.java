@@ -24,12 +24,10 @@ public class Assets_LV2 {
         BGMusic.setLooping(true);
         BGMusic.setVolume(0.5f);
 
+        // --- Áp dụng Linear Filter ---
+        AssetUtils.applyLinearFilter(enemyTex, backgroundTex, EnemyBullet);
     }
     public static void dispose() {
-        enemyTex.dispose();
-        backgroundTex.dispose();
-        ChickenHit.dispose();
-        EnemyBullet.dispose();
-        BGMusic.dispose();
+        AssetUtils.disposeResources(enemyTex, backgroundTex, ChickenHit, EnemyBullet, BGMusic);
     }
 }

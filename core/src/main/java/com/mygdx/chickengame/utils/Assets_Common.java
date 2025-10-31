@@ -75,29 +75,15 @@ public class Assets_Common {
     BulletSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/laser1.ogg"));
     PlayerExplosion = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/PlayerDie.ogg"));
     PowerUpSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffect/PowerUp.ogg"));
+
+    // --- Áp dụng Linear Filter cho tất cả texture ---
+    AssetUtils.applyLinearFilter(playerLV1, playerLV2, playerLV3, bulletLV1, bulletLV2, bulletLV3, bulletLV4, bulletLV5, powerUpTex);
     }
 
     // =============================
     // GIẢI PHÓNG TÀI NGUYÊN
     // =============================
     public static void dispose() {
-
-    playerLV1.dispose();
-    playerLV2.dispose();
-    playerLV3.dispose();
-    // Các biến tổng quát chỉ trỏ tới các texture trên, không cần dispose riêng
-
-    bulletLV1.dispose();
-    bulletLV2.dispose();
-    bulletLV3.dispose();
-    bulletLV4.dispose();
-    bulletLV5.dispose();
-    // Các biến tổng quát chỉ trỏ tới các texture trên, không cần dispose riêng
-
-        powerUpTex.dispose();
-
-        BulletSound.dispose();
-        PlayerExplosion.dispose();
-        PowerUpSound.dispose();
+        AssetUtils.disposeResources(playerLV1, playerLV2, playerLV3, bulletLV1, bulletLV2, bulletLV3, bulletLV4, bulletLV5, powerUpTex, BulletSound, PlayerExplosion, PowerUpSound);
     }
 }
