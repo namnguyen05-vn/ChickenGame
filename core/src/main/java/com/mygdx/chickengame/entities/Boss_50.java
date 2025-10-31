@@ -9,20 +9,19 @@ import com.mygdx.chickengame.utils.Assets_LV3;
 public class Boss_50 {
     public Rectangle rect;
     private float speedX, speedY;
-    private float hp = 100;              // máu Boss
+    private float hp = 100f;              // máu Boss
     private float shootInterval;        // thời gian chờ giữa 2 phát bắn
     private float time_last = 0f;
     private float time_spawm =0f;
     private float cd_spawm;
     private Player player;              // tham chiếu tới player
     public Array<Enemy3> enemy3;
-
     public Array<Boss_Bullet> bullets;
 
-    public Boss_50(Player player) {
+    public Boss_50(Player player,float startX, float startY) {
         this.player = player;
 
-        rect = new Rectangle(rect.x, rect.y, 231, 130);
+        rect = new Rectangle(startX,startY, 231, 130);
         speedX = 75;
         speedY = 75;
 
