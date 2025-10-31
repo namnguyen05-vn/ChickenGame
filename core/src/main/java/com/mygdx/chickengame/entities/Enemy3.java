@@ -9,7 +9,7 @@ import com.mygdx.chickengame.utils.Assets_LV3;
 public class Enemy3 {
     public Rectangle rect;
     private float speedX, speedY;
-    private float Hp = 5;
+    private float Hp = 4;
     private float time_shoot = 0f;
     private float cd_shoot;
     public Array<Enemy_Bullet> bullets;

@@ -9,28 +9,27 @@ import com.mygdx.chickengame.utils.Assets_LV3;
 public class Boss_50 {
     public Rectangle rect;
     private float speedX, speedY;
-    private float hp = 50;              // máu Boss
+    private float hp = 100f;              // máu Boss
     private float shootInterval;        // thời gian chờ giữa 2 phát bắn
     private float time_last = 0f;
     private float time_spawm =0f;
     private float cd_spawm;
     private Player player;              // tham chiếu tới player
     public Array<Enemy3> enemy3;
-
     public Array<Boss_Bullet> bullets;
 
-    public Boss_50(Player player) {
+    public Boss_50(Player player,float startX, float startY) {
         this.player = player;
 
-        rect = new Rectangle(350, 350, 231, 130);
+        rect = new Rectangle(startX,startY, 231, 130);
         speedX = 75;
-        speedY = 0;
+        speedY = 75;
 
-        shootInterval = MathUtils.random(0.3f, 0.6f);
+        shootInterval = MathUtils.random(0.5f, 0.8f);
         cd_spawm = 2f;
         bullets = new Array<>();
         enemy3 = new Array<>();
-    }
+    } 
 
     public void update(float delta) {
         rect.x += speedX * delta;
@@ -38,7 +37,7 @@ public class Boss_50 {
 
         // Bật lại khi chạm viền
         if (rect.x < 50 || rect.x > 700 - rect.width) speedX = -speedX;
-        if (rect.y < 449 || rect.y > 452 - rect.height) speedY = -speedY;
+        if (rect.y < 400 || rect.y > 650 - rect.height) speedY = -speedY;
 
         // Tăng thời gian chờ
         time_last += delta;
@@ -52,7 +51,7 @@ public class Boss_50 {
             bullets.add(new Boss_Bullet(rect.x + rect.width-195, rect.y, playerX, playerY));
 
             time_last = 0f;
-            shootInterval = MathUtils.random(0.3f, 0.6f);
+            shootInterval = MathUtils.random(0.5f, 0.8f);
         }
 
         time_spawm += delta;

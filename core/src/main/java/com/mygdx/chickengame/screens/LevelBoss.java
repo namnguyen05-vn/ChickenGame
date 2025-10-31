@@ -5,7 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.chickengame.ChickenGame;
 import com.mygdx.chickengame.entities.*;
@@ -183,9 +182,12 @@ public class LevelBoss implements Screen {
     }
 
     private void transitionToPhase2() {
+        float tmpx = boss_100.getX();
+        float tmpy = boss_100.getY();
         isPhase1 = false;
-        boss_100 = null;
-        boss_50 = new Boss_50(player);
+        boss_100 = null; // Remove phase 1 boss
+        boss_50 = new Boss_50(player,tmpx,tmpy); // Create phase 2 boss
+        maxBossHp= maxBossHp*2 ;
         currentBossHp = boss_50.getHp();
         enemies1.clear();
     }
@@ -314,10 +316,16 @@ public class LevelBoss implements Screen {
     private void drawBossHealthBar() {
         if (shapeRenderer == null) return;
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(50, 550, 300, 20);
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.rect(50, 550, 300 * (currentBossHp / maxBossHp), 20);
+
+        // Background của thanh máu (đỏ)
+        shapeRenderer.setColor(1, 0, 0, 1);
+        shapeRenderer.rect(25, 700, 300, 20);
+
+        // Thanh máu hiện tại (xanh lá)
+        shapeRenderer.setColor(0, 1, 0, 1);
+        float healthPercentage = currentBossHp / maxBossHp;
+        shapeRenderer.rect(25, 700, 300 * healthPercentage, 20);
+
         shapeRenderer.end();
     }
 
