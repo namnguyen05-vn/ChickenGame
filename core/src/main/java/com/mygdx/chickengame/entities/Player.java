@@ -70,7 +70,7 @@ public class Player {
         float startOffset = -spacing * (count - 1) / 2f;
         for (int i = 0; i < count; i++) {
             float offsetX = startOffset + i * spacing;
-            bullets.add(new Bullet(centerX + offsetX, startY, 1, 0));
+            bullets.add(new Bullet(centerX + offsetX, startY, bulletLevel));
         }
         // Điều chỉnh thời gian chờ (cooldown) theo số viên
         if (count <= 1) shootCooldown = 0.3f;
@@ -106,7 +106,6 @@ public class Player {
     }
 
     public void render(SpriteBatch batch) {
-        // Sử dụng ảnh playerLV3 cho mọi cấp đạn 
         Texture tex = Assets_Common.playerLV3;
         batch.draw(tex, rect.x, rect.y, rect.width, rect.height);
     }

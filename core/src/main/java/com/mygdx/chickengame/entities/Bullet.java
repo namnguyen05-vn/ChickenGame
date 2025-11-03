@@ -7,16 +7,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.chickengame.utils.Assets_Common;
 
-/**
- * Lớp đạn: xử lý chuyển động, vẽ, và góc nghiêng theo hướng bay (chữ V).
- */
+
 public class Bullet {
     private Sprite sprite;
     public Rectangle rect;
-    // Getter cho rect
-    public Rectangle getRect() {
-        return rect;
-    }
 
     // Trả về sát thương của đạn theo cấp độ
     public int getDamage() {
@@ -32,22 +26,29 @@ public class Bullet {
     private int level;
     private float speed;
 
-    public Bullet(float x, float y, int level, float angleOffset) {
-        this.level = level;
-        // Luôn dùng 1 ảnh đạn duy nhất
+    public Bullet(float x, float y, int level) {
+    this.level = level;
+
+    // Dùng 1 ảnh đạn duy nhất
+        // Constructor: đạn bắn thẳng lên, không cần angleOffset
         Texture tex = Assets_Common.bulletLV1;
         this.sprite = new Sprite(tex);
         this.sprite.setSize(16, 32);
-        // X, Y truyền vào sẽ là tâm của đạn để dễ căn giữa so với player
+    
+        // Đặt vị trí theo tâm (đạn bay thẳng lên, không cần góc)
         this.sprite.setPosition(x - this.sprite.getWidth() / 2f, y - this.sprite.getHeight() / 2f);
+    
+        // Không cần xoay vì đạn bay thẳng
         this.sprite.setOriginCenter();
-        this.sprite.setRotation(angleOffset); // xoay hình đạn
+    
+        // Hitbox (vùng va chạm)
         this.rect = new Rectangle(this.sprite.getX(), this.sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        // Đặt vận tốc bay (chữ V nghĩa là lệch trái hoặc phải 1 góc)
-        float radians = (float) Math.toRadians(angleOffset);
-        this.velocity = new Vector2((float) Math.sin(radians) * 250, 400f); // Y hướng lên
+    
+        // Hướng bay thẳng lên (0 độ)
+        this.velocity = new Vector2(0, 400f);
         this.speed = 400f;
-    }
+}
+
 
     public void update(float delta) {
         sprite.setX(sprite.getX() + velocity.x * delta);
