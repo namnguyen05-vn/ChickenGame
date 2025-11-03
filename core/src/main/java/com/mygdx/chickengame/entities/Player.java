@@ -64,15 +64,14 @@ public class Player {
         Assets_Common.BulletSound.play(0.3f);
         float centerX = rect.x + rect.width / 2f;
         float startY = rect.y + rect.height;
-        // Bắn số viên bằng bulletLevel theo dải ngang căn giữa (1..5)
         int count = Math.max(1, Math.min(5, bulletLevel));
-        float spacing = 18f; // pixels between bullets
+        float spacing = 18f;
         float startOffset = -spacing * (count - 1) / 2f;
         for (int i = 0; i < count; i++) {
             float offsetX = startOffset + i * spacing;
             bullets.add(new Bullet(centerX + offsetX, startY, bulletLevel));
         }
-        // Điều chỉnh thời gian chờ (cooldown) theo số viên
+
         if (count <= 1) shootCooldown = 0.3f;
         else if (count == 2) shootCooldown = 0.25f;
         else if (count == 3) shootCooldown = 0.2f;

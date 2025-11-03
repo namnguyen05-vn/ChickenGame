@@ -29,8 +29,6 @@ public class Bullet {
     public Bullet(float x, float y, int level) {
     this.level = level;
 
-    // Dùng 1 ảnh đạn duy nhất
-        // Constructor: đạn bắn thẳng lên
         Texture tex = Assets_Common.bulletLV1;
         this.sprite = new Sprite(tex);
         this.sprite.setSize(16, 32);
@@ -38,16 +36,13 @@ public class Bullet {
         // Đặt vị trí theo tâm 
         this.sprite.setPosition(x - this.sprite.getWidth() / 2f, y - this.sprite.getHeight() / 2f);
     
-        // Không cần xoay vì đạn bay thẳng
-        this.sprite.setOriginCenter();
-    
         // Hitbox (vùng va chạm)
         this.rect = new Rectangle(this.sprite.getX(), this.sprite.getY(), sprite.getWidth(), sprite.getHeight());
     
         // Hướng bay thẳng lên (0 độ)
         this.velocity = new Vector2(0, 400f);
         this.speed = 400f;
-}
+    }
 
 
     public void update(float delta) {
