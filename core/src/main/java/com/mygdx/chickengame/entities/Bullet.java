@@ -30,12 +30,12 @@ public class Bullet {
     this.level = level;
 
     // Dùng 1 ảnh đạn duy nhất
-        // Constructor: đạn bắn thẳng lên, không cần angleOffset
+        // Constructor: đạn bắn thẳng lên
         Texture tex = Assets_Common.bulletLV1;
         this.sprite = new Sprite(tex);
         this.sprite.setSize(16, 32);
     
-        // Đặt vị trí theo tâm (đạn bay thẳng lên, không cần góc)
+        // Đặt vị trí theo tâm 
         this.sprite.setPosition(x - this.sprite.getWidth() / 2f, y - this.sprite.getHeight() / 2f);
     
         // Không cần xoay vì đạn bay thẳng
