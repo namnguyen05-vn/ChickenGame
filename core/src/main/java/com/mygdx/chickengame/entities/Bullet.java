@@ -27,8 +27,7 @@ public class Bullet {
     private float speed;
 
     public Bullet(float x, float y, int level) {
-    this.level = level;
-
+        this.level = level;
         Texture tex = Assets_Common.bulletLV1;
         this.sprite = new Sprite(tex);
         this.sprite.setSize(16, 32);
@@ -40,8 +39,9 @@ public class Bullet {
         this.rect = new Rectangle(this.sprite.getX(), this.sprite.getY(), sprite.getWidth(), sprite.getHeight());
     
         // Hướng bay thẳng lên (0 độ)
-        this.velocity = new Vector2(0, 400f);
         this.speed = 400f;
+        this.velocity = new Vector2(0,1).nor().scl(speed);
+        
     }
 
 

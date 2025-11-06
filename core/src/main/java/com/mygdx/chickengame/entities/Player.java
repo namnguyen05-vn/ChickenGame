@@ -94,8 +94,8 @@ public class Player {
     public int getPlayerLevel() { return playerLevel; }
     public int getBulletLevel() { return bulletLevel; }
     public Rectangle getRect() { return rect; }
-    public void setPlayerLevel(int lv) { playerLevel = Math.max(1, Math.min(3, lv)); }
-    public void setBulletLevel(int lv) { bulletLevel = Math.max(1, Math.min(3, lv)); }
+    // public void setPlayerLevel(int lv) { playerLevel = Math.max(1, Math.min(3, lv)); }
+    // public void setBulletLevel(int lv) { bulletLevel = Math.max(1, Math.min(3, lv)); }
 
     public void resetForNewLevel() {
         // Đặt lại vị trí về mặc định
