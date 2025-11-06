@@ -30,6 +30,7 @@ public class Assets_Common {
     public static Texture bulletLV3;
     public static Texture bulletLV4;
     public static Texture bulletLV5;
+    public static Texture DangDuong;
     // Thêm biến tổng quát cho bullet
     public static Texture bulletTex;
     public static Texture upgradedbulletTex;
@@ -64,6 +65,7 @@ public class Assets_Common {
     bulletLV3 = new Texture("Image/UpdateBullet.png");
     bulletLV4 = new Texture("Image/UpdateBullet.png");
     bulletLV5 = new Texture("Image/UpdateBullet.png");
+    DangDuong = new Texture("Image/DangDuong.jpg");
     // Gán biến tổng quát
     bulletTex = bulletLV1;
     upgradedbulletTex = bulletLV3;

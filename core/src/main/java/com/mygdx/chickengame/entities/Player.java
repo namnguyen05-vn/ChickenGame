@@ -64,15 +64,14 @@ public class Player {
         Assets_Common.BulletSound.play(0.3f);
         float centerX = rect.x + rect.width / 2f;
         float startY = rect.y + rect.height;
-        // Bắn số viên bằng bulletLevel theo dải ngang căn giữa (1..5)
         int count = Math.max(1, Math.min(5, bulletLevel));
-        float spacing = 18f; // pixels between bullets
+        float spacing = 18f;
         float startOffset = -spacing * (count - 1) / 2f;
         for (int i = 0; i < count; i++) {
             float offsetX = startOffset + i * spacing;
-            bullets.add(new Bullet(centerX + offsetX, startY, 1, 0));
+            bullets.add(new Bullet(centerX + offsetX, startY, bulletLevel));
         }
-        // Điều chỉnh thời gian chờ (cooldown) theo số viên
+
         if (count <= 1) shootCooldown = 0.3f;
         else if (count == 2) shootCooldown = 0.25f;
         else if (count == 3) shootCooldown = 0.2f;
@@ -95,8 +94,8 @@ public class Player {
     public int getPlayerLevel() { return playerLevel; }
     public int getBulletLevel() { return bulletLevel; }
     public Rectangle getRect() { return rect; }
-    public void setPlayerLevel(int lv) { playerLevel = Math.max(1, Math.min(3, lv)); }
-    public void setBulletLevel(int lv) { bulletLevel = Math.max(1, Math.min(3, lv)); }
+    // public void setPlayerLevel(int lv) { playerLevel = Math.max(1, Math.min(3, lv)); }
+    // public void setBulletLevel(int lv) { bulletLevel = Math.max(1, Math.min(3, lv)); }
 
     public void resetForNewLevel() {
         // Đặt lại vị trí về mặc định
@@ -106,7 +105,6 @@ public class Player {
     }
 
     public void render(SpriteBatch batch) {
-        // Sử dụng ảnh playerLV3 cho mọi cấp đạn 
         Texture tex = Assets_Common.playerLV3;
         batch.draw(tex, rect.x, rect.y, rect.width, rect.height);
     }
